@@ -121,6 +121,18 @@
         #auth-section { display: block; } 
         #portal-section { display: none; }
 
+        /* POPUP MODAL STYLES */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;
+            backdrop-filter: blur(3px);
+        }
+        .modal-content {
+            background: linear-gradient(to bottom, #fcfcfc 0%, #f1f1f1 100%);
+            padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #ddd;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 1px 0 #fff; max-width: 400px; width: 90%;
+        }
+
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
         p { line-height: 1.6; margin-bottom: 15px; }
     </style>
@@ -146,11 +158,10 @@
         <div class="content-grid">
             
             <div class="main-col">
-                <!-- AUTHENTICATION SECTION (Shows when logged out) -->
+                <!-- AUTHENTICATION SECTION -->
                 <div class="glass-panel" id="auth-section" style="display: block;">
                     <h2>Secure Student Authentication</h2>
                     
-                    <!-- Warning banner if keys aren't added -->
                     <div id="missing-keys-warning" style="display: none; background: #fadbd8; color: #c0392b; padding: 15px; border-radius: 6px; border-left: 4px solid #c0392b; margin-bottom: 15px;">
                         <strong>Database Disconnected:</strong> You must insert your Supabase URL and Anon Key into the HTML code for this to work!
                     </div>
@@ -170,7 +181,7 @@
                     </div>
                 </div>
 
-                <!-- PORTAL SECTION (Shows when logged in) -->
+                <!-- PORTAL SECTION -->
                 <div class="glass-panel" id="portal-section" style="display: none;">
                     <h2>Academic Progress Tracker</h2>
                     <p>Welcome back, <strong id="user-email">Student</strong>. You may update your current academic records and save your progress directly to the provincial database.</p>
@@ -180,6 +191,12 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <button class="sangaia-btn" onclick="saveProgress()" id="save-btn"><span>Save Progress</span></button>
                         <span id="save-status" style="color: green; font-size: 0.9em; font-weight: bold; display: none;">Successfully Saved!</span>
+                    </div>
+
+                    <!-- LINK TO THE NEW DASHBOARD PAGE -->
+                    <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+                        <p>Need to view your enrolled classes and grades?</p>
+                        <a href="dashboard.html" class="sangaia-btn active" style="width: auto;"><span>Open Course Dashboard</span></a>
                     </div>
                 </div>
             </div>
@@ -198,6 +215,15 @@
     <footer>
         &copy; 2026 Ministry of Education - United Provinces of Sangaia
     </footer>
+</div>
+
+<!-- SUCCESS POPUP MODAL -->
+<div class="modal-overlay" id="success-modal">
+    <div class="modal-content">
+        <h2 style="color: #27ae60; margin-top: 0; border-bottom: none;">Account Created!</h2>
+        <p>Your student account has been successfully registered in the Sangaia provincial database.</p>
+        <button class="sangaia-btn active" onclick="closeModal()"><span>Continue to Portal</span></button>
+    </div>
 </div>
 
 <!-- SUPABASE INTEGRATION LOGIC -->
@@ -248,11 +274,14 @@
         warningBanner.style.display = 'block';
     }
 
-    // Displays messages to the user
     function showAuthMessage(msg, color = '#c0392b') {
         authMsg.style.display = 'block';
         authMsg.style.color = color;
         authMsg.textContent = msg;
+    }
+
+    function closeModal() {
+        document.getElementById('success-modal').style.display = 'none';
     }
 
     // Log In (Email & Password)
@@ -302,7 +331,8 @@
         if (error) {
             showAuthMessage(error.message);
         } else {
-            showAuthMessage("Account created successfully! You are now logged in.", "green");
+            // SHOW THE POPUP MODAL
+            document.getElementById('success-modal').style.display = 'flex';
         }
     }
 
