@@ -116,7 +116,9 @@
             font-family: inherit; font-size: 1rem; box-sizing: border-box; resize: vertical; margin-bottom: 15px;
         }
 
-        #auth-section, #portal-section { display: none; } /* Handled by JS */
+        /* Default visibility states */
+        #auth-section { display: block; } 
+        #portal-section { display: none; }
 
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
         p { line-height: 1.6; margin-bottom: 15px; }
@@ -146,9 +148,16 @@
                 <!-- AUTHENTICATION SECTION (Shows when logged out) -->
                 <div class="glass-panel" id="auth-section">
                     <h2>Secure Student Authentication</h2>
+                    
+                    <!-- Warning banner if keys aren't added -->
+                    <div id="missing-keys-warning" style="display: none; background: #fadbd8; color: #c0392b; padding: 15px; border-radius: 6px; border-left: 4px solid #c0392b; margin-bottom: 15px;">
+                        <strong>Database Disconnected:</strong> You must insert your Supabase URL and Anon Key into the HTML code for this button to work!
+                    </div>
+
                     <p>Please authenticate using your linked Google Cloud account to access your educational records, save your academic progress, and manage your subventions.</p>
                     
                     <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                        <!-- THIS IS THE LOGIN BUTTON -->
                         <button class="sangaia-btn" onclick="signInWithGoogle()"><span>Log In with Google</span></button>
                     </div>
                 </div>
@@ -188,8 +197,8 @@
     // =========================================================================
     // IMPORTANT: ENTER YOUR SUPABASE CREDENTIALS HERE
     // =========================================================================
-    const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; // e.g., 'https://xyz.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZGRpdHN1b21panN4eWxkcGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDU0NjYsImV4cCI6MjA5NDA4MTQ2Nn0.2ZNOqYpVGD11ttSW8qwOSlFQzwP10ys7TUreh7YiCxU';
+    const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; // e.g., 'https://xyz.supabase.co'
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
 
     // Initialize Supabase (only if keys are provided)
     let supabase;
@@ -204,6 +213,7 @@
     const progressData = document.getElementById('progress-data');
     const saveStatus = document.getElementById('save-status');
     const saveBtn = document.getElementById('save-btn');
+    const warningBanner = document.getElementById('missing-keys-warning');
 
     // Setup Auth Listener
     if (supabase) {
@@ -223,32 +233,38 @@
             }
         });
     } else {
-        // Fallback UI if keys aren't set yet
-        authSection.style.display = 'block';
-        authSection.innerHTML = `<h2>Database Disconnected</h2><p style="color:red;">Please insert your Supabase URL and Anon Key into the HTML file to enable the login portal.</p>`;
+        // If keys aren't set, show the warning banner
+        warningBanner.style.display = 'block';
     }
 
     // Google Sign-In
     async function signInWithGoogle() {
+        if (!supabase) {
+            alert("Database is not connected! Please add your URL and Key to the HTML file.");
+            return;
+        }
+
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
+                // THIS FIXES THE 404 ERROR - It forces Google to redirect back to this exact page
                 redirectTo: window.location.origin + window.location.pathname
             }
         });
         if (error) alert("Error logging in: " + error.message);
     }
-    
+
     // Sign Out
     async function signOut() {
+        if (!supabase) return;
         const { error } = await supabase.auth.signOut();
         if (error) alert("Error signing out.");
         progressData.value = ''; // clear data
     }
 
-    // Fetch existing progress from Supabase table
-    // Assumes you have a table named 'student_progress' with columns: 'user_id' (UUID) and 'progress_notes' (Text)
+    // Fetch existing progress
     async function fetchProgress(userId) {
+        if (!supabase) return;
         const { data, error } = await supabase
             .from('student_progress')
             .select('progress_notes')
@@ -260,14 +276,15 @@
         }
     }
 
-    // Save/Update progress to Supabase
+    // Save/Update progress
     async function saveProgress() {
+        if (!supabase) return;
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
         saveBtn.querySelector('span').textContent = 'Saving...';
         
-        // Upsert data (insert if new, update if exists)
+        // Upsert data
         const { error } = await supabase
             .from('student_progress')
             .upsert({ 
