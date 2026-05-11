@@ -219,9 +219,12 @@
         }
 
         const container = document.getElementById('course-container');
+        const noCoursesMsg = document.getElementById('no-courses-msg');
         
         if (courses && courses.length > 0) {
             container.style.display = 'grid';
+            noCoursesMsg.style.display = 'none';
+            container.innerHTML = ''; // <-- Clears old duplicates before loading!
             
             // Generate HTML for each course the user is enrolled in
             courses.forEach(course => {
@@ -238,10 +241,11 @@
             });
         } else {
             // Show this if the database query succeeds but returns 0 rows
-            document.getElementById('no-courses-msg').style.display = 'block';
+            container.style.display = 'none';
+            noCoursesMsg.style.display = 'block';
         }
     }
 </script>
 
 </body>
-</html> 
+</html>
