@@ -151,7 +151,7 @@
 
         /* VERTICAL FULL-HEIGHT METAL SIDEBAR */
         .app-sidebar {
-            width: 260px;
+            width: 220px;
             flex-shrink: 0;
             background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
             border-right: 1px solid #000;
@@ -197,20 +197,6 @@
             background: rgba(0,0,0,0.3); /* Same unpressed/pressed style as top nav */
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
             /* Removed Orange border */
-        }
-
-        /* Buttons fixed to the bottom of the sidebar */
-        .sidebar-bottom-actions {
-            margin-top: auto; 
-            padding: 20px;
-            background: rgba(0,0,0,0.15);
-            border-top: 1px solid rgba(255,255,255,0.05);
-        }
-        .sidebar-bottom-actions .sangaia-btn {
-            width: 100%; margin: 0 0 12px 0;
-        }
-        .sidebar-bottom-actions .sangaia-btn:last-child {
-            margin-bottom: 0;
         }
 
         /* The right side content area inside App mode */
@@ -314,10 +300,10 @@
                 </ul>
                 
                 <!-- Action Buttons (Bottom) -->
-                <div class="sidebar-bottom-actions">
-                    <button class="sangaia-btn" onclick="closeCourse()"><span>&larr; Back to Dashboard</span></button>
-                    <button class="sangaia-btn" onclick="signOutFromCourse()"><span>Sign Out</span></button>
-                </div>
+                <ul class="sidebar-nav-metal" style="margin-top: auto; border-top: 1px solid #111;">
+                    <li><a href="javascript:void(0)" onclick="closeCourse()">&larr; Back to Dashboard</a></li>
+                    <li><a href="javascript:void(0)" onclick="signOutFromCourse()">Sign Out</a></li>
+                </ul>
             </div>
 
             <!-- RIGHT MAIN CONTENT AREA -->
