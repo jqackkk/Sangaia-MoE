@@ -111,10 +111,15 @@
         }
         .glass-panel h2 { margin-top: 0; color: var(--moe-amber); border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.4em; }
         
-        textarea {
-            width: 100%; height: 150px; padding: 10px; border-radius: 4px; border: 1px solid #ccc;
-            font-family: inherit; font-size: 1rem; box-sizing: border-box; resize: vertical; margin-bottom: 15px;
+        textarea, input[type="email"], input[type="password"] {
+            width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ccc;
+            font-family: inherit; font-size: 1rem; box-sizing: border-box; margin-bottom: 15px;
         }
+        textarea { height: 150px; resize: vertical; }
+
+        /* Default visibility states */
+        #auth-section { display: block; } 
+        #portal-section { display: none; }
 
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
         p { line-height: 1.6; margin-bottom: 15px; }
@@ -141,26 +146,31 @@
         <div class="content-grid">
             
             <div class="main-col">
-                <!-- AUTHENTICATION SECTION -->
-                <!-- Inline style block guarantees this shows even if JS breaks -->
+                <!-- AUTHENTICATION SECTION (Shows when logged out) -->
                 <div class="glass-panel" id="auth-section" style="display: block;">
                     <h2>Secure Student Authentication</h2>
                     
                     <!-- Warning banner if keys aren't added -->
                     <div id="missing-keys-warning" style="display: none; background: #fadbd8; color: #c0392b; padding: 15px; border-radius: 6px; border-left: 4px solid #c0392b; margin-bottom: 15px;">
-                        <strong>Database Disconnected:</strong> You must insert your Supabase URL and Anon Key into the HTML code for this button to work!
+                        <strong>Database Disconnected:</strong> You must insert your Supabase URL and Anon Key into the HTML code for this to work!
                     </div>
 
-                    <p>Enter your email below to receive a secure Magic Login Link. No password required!</p>
+                    <p>Enter your student credentials below to access your educational records, save your academic progress, and manage your subventions.</p>
                     
                     <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.02); border-radius: 8px;">
-                        <input type="email" id="email-input" placeholder="student@sangaia.gov" style="padding: 10px; width: 60%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px;"><br>
-                        <button class="sangaia-btn" onclick="signInWithEmail()" id="login-btn"><span>Send Magic Link</span></button>
-                        <p id="login-msg" style="color: green; font-weight: bold; display: none; margin-top: 10px;">Link sent! Please check your email.</p>
+                        <input type="email" id="email-input" placeholder="student@sangaia.gov" style="width: 80%; max-width: 300px;"><br>
+                        <input type="password" id="password-input" placeholder="Password" style="width: 80%; max-width: 300px;"><br>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <button class="sangaia-btn" onclick="logIn()" id="login-btn"><span>Log In</span></button>
+                            <button class="sangaia-btn" onclick="signUp()" id="signup-btn"><span>Create Account</span></button>
+                        </div>
+                        
+                        <p id="auth-msg" style="color: #c0392b; font-weight: bold; display: none; margin-top: 15px;"></p>
                     </div>
                 </div>
 
-                <!-- PORTAL SECTION (Hidden by default) -->
+                <!-- PORTAL SECTION (Shows when logged in) -->
                 <div class="glass-panel" id="portal-section" style="display: none;">
                     <h2>Academic Progress Tracker</h2>
                     <p>Welcome back, <strong id="user-email">Student</strong>. You may update your current academic records and save your progress directly to the provincial database.</p>
@@ -206,6 +216,7 @@
     const saveStatus = document.getElementById('save-status');
     const saveBtn = document.getElementById('save-btn');
     const warningBanner = document.getElementById('missing-keys-warning');
+    const authMsg = document.getElementById('auth-msg');
 
     let supabase;
     const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
@@ -227,6 +238,9 @@
                 authSection.style.display = 'block';
                 portalSection.style.display = 'none';
                 logoutBtn.style.display = 'none';
+                document.getElementById('email-input').value = '';
+                document.getElementById('password-input').value = '';
+                authMsg.style.display = 'none';
             }
         });
     } else {
@@ -234,44 +248,61 @@
         warningBanner.style.display = 'block';
     }
 
-    // Check for hidden authentication errors in the URL
-    window.onload = function() {
-        const hash = window.location.hash;
-        if (hash && hash.includes('error_description')) {
-            const urlParams = new URLSearchParams(hash.substring(1));
-            alert("Login Error: " + urlParams.get('error_description').replace(/\+/g, ' '));
-        }
-    };
+    // Displays messages to the user
+    function showAuthMessage(msg, color = '#c0392b') {
+        authMsg.style.display = 'block';
+        authMsg.style.color = color;
+        authMsg.textContent = msg;
+    }
 
-    // Email Magic Link Sign-In (Replaces Google OAuth)
-    async function signInWithEmail() {
-        if (!supabase) {
-            alert("Database is not connected! Please add your URL and Key to the HTML file.");
-            return;
-        }
-
+    // Log In (Email & Password)
+    async function logIn() {
+        if (!supabase) return showAuthMessage("Database is not connected.");
+        
         const email = document.getElementById('email-input').value;
-        if (!email) {
-            alert("Please enter a valid email address.");
-            return;
-        }
-
+        const password = document.getElementById('password-input').value;
+        
+        if (!email || !password) return showAuthMessage("Please enter both email and password.");
+        
         const btnText = document.querySelector('#login-btn span');
-        btnText.textContent = "Sending...";
+        btnText.textContent = "Logging In...";
+        authMsg.style.display = 'none';
 
-        const { data, error } = await supabase.auth.signInWithOtp({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email: email,
-            options: {
-                emailRedirectTo: window.location.origin + window.location.pathname
-            }
+            password: password
         });
 
+        btnText.textContent = "Log In";
+
+        if (error) showAuthMessage(error.message);
+    }
+
+    // Sign Up (Email & Password)
+    async function signUp() {
+        if (!supabase) return showAuthMessage("Database is not connected.");
+        
+        const email = document.getElementById('email-input').value;
+        const password = document.getElementById('password-input').value;
+        
+        if (!email || !password) return showAuthMessage("Please enter both email and password.");
+        if (password.length < 6) return showAuthMessage("Password must be at least 6 characters.");
+        
+        const btnText = document.querySelector('#signup-btn span');
+        btnText.textContent = "Creating...";
+        authMsg.style.display = 'none';
+
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        });
+
+        btnText.textContent = "Create Account";
+
         if (error) {
-            alert("Error: " + error.message);
-            btnText.textContent = "Send Magic Link";
+            showAuthMessage(error.message);
         } else {
-            btnText.textContent = "Send Magic Link";
-            document.getElementById('login-msg').style.display = 'block';
+            showAuthMessage("Account created successfully! You are now logged in.", "green");
         }
     }
 
