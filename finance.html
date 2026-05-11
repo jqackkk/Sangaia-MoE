@@ -90,8 +90,8 @@
             box-shadow: 0 0.375em 0.5em rgba(0, 0, 0, 0.2), inset 0 0.25em 0.25em rgba(0, 0, 0, 0.4), inset 0 0.375em 0.5em 0.25em #BBBBBB;
             color: #333; font-weight: bold;
         }
-        .sangaia-btn::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); width: calc(100% - 0.875em); border-radius: 2em 2em 0.5em 0.5em; top: 5%; filter: blur(1px); z-index: 2; }
-        .sangaia-btn::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.2), rgb(255, 255, 255, 0.5)); width: calc(100% - 1.25em); border-radius: 0.75em; bottom: 10%; filter: blur(3px); }
+        .sangaia-btn::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); width: calc(100% - 0.875em); border-radius: 2em 2em 0.5em 0.5em; top: 5%; filter: blur(1px); z-index: 2; pointer-events: none;}
+        .sangaia-btn::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.2), rgb(255, 255, 255, 0.5)); width: calc(100% - 1.25em); border-radius: 0.75em; bottom: 10%; filter: blur(3px); pointer-events: none;}
         .sangaia-btn span { position: relative; z-index: 3; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
         .sangaia-btn:hover { filter: brightness(1.05); }
 
