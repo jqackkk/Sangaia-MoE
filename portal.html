@@ -88,8 +88,8 @@
             box-shadow: 0 0.375em 0.5em rgba(0, 0, 0, 0.2), inset 0 0.25em 0.25em rgba(0, 0, 0, 0.4), inset 0 0.375em 0.5em 0.25em #BBBBBB;
             color: #333; font-weight: bold;
         }
-        .sangaia-btn::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); width: calc(100% - 0.875em); border-radius: 2em 2em 0.5em 0.5em; top: 5%; filter: blur(1px); z-index: 2; }
-        .sangaia-btn::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.2), rgb(255, 255, 255, 0.5)); width: calc(100% - 1.25em); border-radius: 0.75em; bottom: 10%; filter: blur(3px); }
+        .sangaia-btn::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); width: calc(100% - 0.875em); border-radius: 2em 2em 0.5em 0.5em; top: 5%; filter: blur(1px); z-index: 2; pointer-events: none;}
+        .sangaia-btn::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.2), rgb(255, 255, 255, 0.5)); width: calc(100% - 1.25em); border-radius: 0.75em; bottom: 10%; filter: blur(3px); pointer-events: none;}
         .sangaia-btn span { position: relative; z-index: 3; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
         .sangaia-btn:hover { filter: brightness(1.05); }
 
@@ -116,10 +116,6 @@
             font-family: inherit; font-size: 1rem; box-sizing: border-box; resize: vertical; margin-bottom: 15px;
         }
 
-        /* Default visibility states */
-        #auth-section { display: block; } 
-        #portal-section { display: none; }
-
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
         p { line-height: 1.6; margin-bottom: 15px; }
     </style>
@@ -145,8 +141,9 @@
         <div class="content-grid">
             
             <div class="main-col">
-                <!-- AUTHENTICATION SECTION (Shows when logged out) -->
-                <div class="glass-panel" id="auth-section">
+                <!-- AUTHENTICATION SECTION -->
+                <!-- Inline style block guarantees this shows even if JS breaks -->
+                <div class="glass-panel" id="auth-section" style="display: block;">
                     <h2>Secure Student Authentication</h2>
                     
                     <!-- Warning banner if keys aren't added -->
@@ -157,13 +154,12 @@
                     <p>Please authenticate using your linked Google Cloud account to access your educational records, save your academic progress, and manage your subventions.</p>
                     
                     <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.02); border-radius: 8px;">
-                        <!-- THIS IS THE LOGIN BUTTON -->
                         <button class="sangaia-btn" onclick="signInWithGoogle()"><span>Log In with Google</span></button>
                     </div>
                 </div>
 
-                <!-- PORTAL SECTION (Shows when logged in) -->
-                <div class="glass-panel" id="portal-section">
+                <!-- PORTAL SECTION (Hidden by default) -->
+                <div class="glass-panel" id="portal-section" style="display: none;">
                     <h2>Academic Progress Tracker</h2>
                     <p>Welcome back, <strong id="user-email">Student</strong>. You may update your current academic records and save your progress directly to the provincial database.</p>
                     
@@ -200,12 +196,6 @@
     const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; // e.g., 'https://xyz.supabase.co'
     const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
 
-    // Initialize Supabase (only if keys are provided)
-    let supabase;
-    if(SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE') {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
-
     const authSection = document.getElementById('auth-section');
     const portalSection = document.getElementById('portal-section');
     const logoutBtn = document.getElementById('logout-btn');
@@ -215,8 +205,13 @@
     const saveBtn = document.getElementById('save-btn');
     const warningBanner = document.getElementById('missing-keys-warning');
 
-    // Setup Auth Listener
-    if (supabase) {
+    let supabase;
+    const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
+
+    if (keysValid && window.supabase) {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Setup Auth Listener
         supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
                 // User is logged in
@@ -247,7 +242,7 @@
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                // THIS FIXES THE 404 ERROR - It forces Google to redirect back to this exact page
+                // Forces Google to redirect exactly back to this portal
                 redirectTo: window.location.origin + window.location.pathname
             }
         });
@@ -284,7 +279,6 @@
 
         saveBtn.querySelector('span').textContent = 'Saving...';
         
-        // Upsert data
         const { error } = await supabase
             .from('student_progress')
             .upsert({ 
