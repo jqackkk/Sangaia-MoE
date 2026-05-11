@@ -77,7 +77,6 @@
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8); 
         }
         
-        /* Highlight the portal tab since Dashboard is a sub-page of the portal */
         #globalnav li a.active { color: #fff; background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
 
         .sangaia-btn {
@@ -110,13 +109,42 @@
         }
         .glass-panel h2 { margin-top: 0; color: var(--moe-amber); border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.4em; }
 
-        /* GRID FOR COURSES */
+        /* SELECTION GRID */
         .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px; }
         .course-card { background: rgba(255,255,255,0.9); border: 1px solid #ccc; border-radius: 6px; padding: 15px; position: relative; }
         .course-card h3 { margin-top: 0; color: #d35400; font-size: 1.2em; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
         .course-grade { position: absolute; top: 15px; right: 15px; font-weight: bold; background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; border: 1px solid #a5d6a7;}
 
-        /* LOADER */
+        /* SIDEBAR NAVIGATION */
+        .sidebar-nav { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav li { border-bottom: 1px solid #eee; }
+        .sidebar-nav li a { 
+            display: block; padding: 15px 20px; text-decoration: none; color: #555; 
+            font-weight: bold; transition: background 0.2s, color 0.2s; 
+        }
+        .sidebar-nav li a:hover { background: rgba(243, 156, 18, 0.1); color: #d35400; }
+        .sidebar-nav li a.active { 
+            background: rgba(211, 84, 0, 0.1); color: #d35400; 
+            border-left: 4px solid #d35400; 
+        }
+
+        /* COURSE HOMEPAGE GRID */
+        .course-homepage-grid {
+            display: grid; gap: 20px;
+        }
+        @media (min-width: 768px) { 
+            .course-homepage-grid {
+                grid-template-columns: 1fr 2fr;
+                grid-template-rows: auto auto;
+            }
+        }
+
+        /* STATUS BADGES */
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85em; display: inline-block; }
+        .status-passed { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        .status-failed { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .status-review { background: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+
         #loader { text-align: center; padding: 50px; color: #888; font-style: italic; }
 
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
@@ -140,28 +168,186 @@
         </ul>
     </nav>
 
-    <div class="content-wrapper" style="max-width: 1200px; margin: 0 auto;">
+    <div class="content-wrapper" style="max-width: 1400px; margin: 0 auto;">
         
-        <div class="glass-panel" id="header-panel" style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h2>Student Dashboard</h2>
-                <p style="margin:0;">Enrolled Student: <strong id="student-email">Loading...</strong></p>
+        <!-- ========================================== -->
+        <!-- STATE 1: DASHBOARD SELECTION VIEW -->
+        <!-- ========================================== -->
+        <div id="dashboard-selection-view">
+            <div class="glass-panel" id="header-panel" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2>Student Dashboard</h2>
+                    <p style="margin:0;">Enrolled Student: <strong id="student-email">Loading...</strong></p>
+                </div>
+                <a href="portal.html" class="sangaia-btn"><span>Back to Portal</span></a>
             </div>
-            <a href="portal.html" class="sangaia-btn"><span>Back to Portal</span></a>
+
+            <div class="glass-panel">
+                <h2>Current Course Enrollments</h2>
+                
+                <div id="loader">Securely fetching your specific courses from the database...</div>
+                
+                <div class="course-grid" id="course-container" style="display: none;">
+                    <!-- Courses injected via Javascript -->
+                </div>
+
+                <p id="no-courses-msg" style="display: none; text-align: center; padding: 40px; color: #777;">
+                    You are not currently enrolled in any provincial courses. Contact your academic advisor.
+                </p>
+            </div>
         </div>
 
-        <div class="glass-panel">
-            <h2>Current Course Enrollments</h2>
+        <!-- ========================================== -->
+        <!-- STATE 2: COURSE DETAIL VIEW (From Mockups) -->
+        <!-- ========================================== -->
+        <div id="course-detail-view" style="display: none; flex-wrap: wrap; gap: 20px;">
             
-            <div id="loader">Securely fetching your specific courses from the database...</div>
-            
-            <div class="course-grid" id="course-container" style="display: none;">
-                <!-- Courses injected via Javascript -->
+            <!-- LEFT SIDEBAR (Nav & Account Info) -->
+            <div style="flex: 1 1 250px; max-width: 300px; display: flex; flex-direction: column; gap: 20px;">
+                <div class="glass-panel" style="padding: 0; overflow: hidden;">
+                    <!-- Account Info Block -->
+                    <div style="background: rgba(0,0,0,0.05); padding: 20px; border-bottom: 1px solid #ddd; text-align: center;">
+                        <h3 style="margin: 0; color: var(--moe-amber); font-size: 1.1em;">Account Info</h3>
+                        <p id="sidebar-username" style="margin: 5px 0 0 0; font-size: 0.9em; word-break: break-all; color: #555;">student@sangaia.gov</p>
+                    </div>
+                    <!-- Navigation Links -->
+                    <ul class="sidebar-nav">
+                        <li><a href="javascript:void(0)" onclick="showTab('homepage')" id="nav-homepage" class="active">Course Homepage</a></li>
+                        <li><a href="javascript:void(0)" onclick="showTab('gradebook')" id="nav-gradebook">Gradebook</a></li>
+                        <li><a href="javascript:void(0)" onclick="showTab('assignments')" id="nav-assignments">Assignments</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Action Buttons -->
+                <button class="sangaia-btn" onclick="closeCourse()" style="width: 100%; margin: 0;"><span>&larr; Back to Dashboard</span></button>
+                <button class="sangaia-btn" onclick="signOutFromCourse()" style="width: 100%; margin: 0;"><span>Sign Out</span></button>
             </div>
 
-            <p id="no-courses-msg" style="display: none; text-align: center; padding: 40px; color: #777;">
-                You are not currently enrolled in any provincial courses. Contact your academic advisor.
-            </p>
+            <!-- RIGHT MAIN CONTENT AREA -->
+            <div style="flex: 3 1 600px;">
+                
+                <!-- Top Header for Course -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;">
+                    <h2 id="view-title" style="margin: 0; font-size: 2em; color: #2c3e50;">Welcome back to <span id="course-name-display" style="color: var(--moe-amber);">Course</span>.</h2>
+                    <div class="glass-panel" style="margin: 0; padding: 10px 20px; box-shadow: none; background: rgba(255,255,255,0.6);">
+                        <span style="color: #555; font-size: 0.9em;">Instructor:</span> <strong id="course-instructor-display" style="color: var(--text-dark);">TBD</strong>
+                    </div>
+                </div>
+
+                <!-- TAB 1: COURSE HOMEPAGE (Mockup 1) -->
+                <div id="tab-homepage" class="course-homepage-grid">
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Recent Submissions</h3>
+                        <ul style="padding-left: 20px; color: #555; margin-bottom: 0;">
+                            <li style="margin-bottom: 10px;">Module 1 Essay <br><span style="font-size:0.85em; color:#888;">Submitted Oct 12</span></li>
+                            <li>Syllabus Quiz <br><span style="font-size:0.85em; color:#888;">Submitted Oct 10</span></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Score Report</h3>
+                        <p style="font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                            Current Average: <strong id="course-grade-display" style="color: #2e7d32; font-size: 1.2em;">A</strong>
+                        </p>
+                        <p style="color: #555;">Your performance tracking indicates you are currently performing within the top 15% of the provincial cohort for this specific module.</p>
+                    </div>
+                    
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Next Deadline</h3>
+                        <p style="color: #555;"><strong>Module 2 Project</strong></p>
+                        <p style="font-size: 0.9em; color: #c0392b; font-weight: bold;">Submit assignment by: 3 Days (11:59 PM)</p>
+                    </div>
+                    
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Percentage Complete</h3>
+                        <div style="background: #eee; border-radius: 100px; height: 20px; width: 100%; overflow: hidden; margin-top: 15px; border: 1px solid #ccc; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);">
+                            <div style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 25%; height: 100%;"></div>
+                        </div>
+                        <p style="text-align: right; margin-top: 5px; font-weight: bold; color: #d35400;">25%</p>
+                        <p style="font-size: 0.85em; color: #777; margin:0;">3 of 12 required modules finished.</p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: GRADEBOOK (Mockup 2) -->
+                <div id="tab-gradebook" style="display: none;">
+                    <div class="glass-panel">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                            <p style="margin:0; color: #555; max-width: 60%;">A detail of every score received on assignments and tests, along with submission status and dates.</p>
+                            <div>
+                                <span class="status-badge" style="background: #e3f2fd; color: #0277bd; border-color: #81d4fa; margin-right: 5px;">Unweighted GPA: 3.8</span>
+                                <span class="status-badge" style="background: #e3f2fd; color: #0277bd; border-color: #81d4fa;">Weighted GPA: 4.2</span>
+                            </div>
+                        </div>
+                        
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                                <thead>
+                                    <tr style="background: rgba(243, 156, 18, 0.1);">
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left; color: #d35400;">Date Submitted</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left; color: #d35400;">Assignment Title</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Status</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 10, 2026</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Syllabus Quiz</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-passed">Passed</span></td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">100%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 12, 2026</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Module 1 Essay</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-passed">Passed</span></td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">88%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 14, 2026</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Pop Quiz 1</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-failed">Failed</span></td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">60%</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 15, 2026</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Module 2 Project</td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-review">In Review</span></td>
+                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; color:#888;">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: ASSIGNMENTS (Mockup 3) -->
+                <div id="tab-assignments" style="display: none;">
+                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">A detail of uncompleted assignments arranged in action cards.</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                        
+                        <div class="glass-panel" style="margin-bottom: 0;">
+                            <h3 style="margin-top: 0; color: var(--moe-amber);">Module 3 Reading</h3>
+                            <p style="font-size: 0.9em; color: #555; height: 60px;">Read chapters 4-6 of the core constitutional text and prepare discussion notes.</p>
+                            <button class="sangaia-btn" style="width: 100%; margin:0;"><span>Start Assignment</span></button>
+                        </div>
+                        
+                        <div class="glass-panel" style="margin-bottom: 0;">
+                            <h3 style="margin-top: 0; color: var(--moe-amber);">Midterm Exam</h3>
+                            <p style="font-size: 0.9em; color: #555; height: 60px;">Comprehensive exam covering modules 1-3. Requires secure provincial browser.</p>
+                            <button class="sangaia-btn" style="width: 100%; margin:0;"><span>Start Exam</span></button>
+                        </div>
+                        
+                        <div class="glass-panel" style="margin-bottom: 0;">
+                            <h3 style="margin-top: 0; color: var(--moe-amber);">Civic Essay</h3>
+                            <p style="font-size: 0.9em; color: #555; height: 60px;">Write a 1,500 word essay on the Aeretocratic Principles.</p>
+                            <button class="sangaia-btn" style="width: 100%; margin:0;"><span>View Rubric</span></button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </div>
@@ -185,11 +371,13 @@
     if (keysValid && window.supabase) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        // Setup Auth Listener to ensure they are logged in to view the dashboard
+        // Setup Auth Listener
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
                 // User is authenticated
-                document.getElementById('student-email').textContent = session.user.email;
+                const email = session.user.email;
+                document.getElementById('student-email').textContent = email;
+                document.getElementById('sidebar-username').textContent = email; // Update sidebar too
                 fetchUserCourses(session.user.id);
             } else {
                 // Not logged in -> Kick them back to the portal
@@ -200,12 +388,17 @@
         document.getElementById('loader').innerHTML = "<span style='color:red;'>Database Disconnected: Please insert your Supabase URL and Key into dashboard.html</span>";
     }
 
+    // Sign out from inside the dashboard
+    async function signOutFromCourse() {
+        if (!supabaseClient) return;
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) alert("Error signing out.");
+    }
+
     // This function fetches specifically from a table named 'courses' matching this user's ID
     async function fetchUserCourses(userId) {
         if (!supabaseClient) return;
 
-        // Make sure you create a table in Supabase called 'courses' with these columns:
-        // 'user_id' (uuid), 'course_name' (text), 'instructor' (text), 'grade' (text)
         const { data: courses, error } = await supabaseClient
             .from('courses')
             .select('*')
@@ -224,18 +417,28 @@
         if (courses && courses.length > 0) {
             container.style.display = 'grid';
             noCoursesMsg.style.display = 'none';
-            container.innerHTML = ''; // <-- Clears old duplicates before loading!
+            container.innerHTML = ''; // Clears old duplicates before loading
             
             // Generate HTML for each course the user is enrolled in
             courses.forEach(course => {
                 const card = document.createElement('div');
                 card.className = 'division-card course-card';
+                
+                // Sanitize variables for JS onclick execution
+                const safeName = (course.course_name || 'Course').replace(/'/g, "\\'");
+                const safeInst = (course.instructor || 'TBD').replace(/'/g, "\\'");
+                const safeGrade = (course.grade || 'N/A').replace(/'/g, "\\'");
+
                 card.innerHTML = `
                     <h3>${course.course_name}</h3>
                     <div class="course-grade">${course.grade || 'N/A'}</div>
                     <p><strong>Instructor:</strong> ${course.instructor || 'TBD'}</p>
                     <p style="font-size: 0.85em; color: #888;">ID: ${course.id}</p>
-                    <button class="sangaia-btn active" style="margin-top:10px; width:100%;"><span>View Syllabus</span></button>
+                    <!-- UPDATED: Go To Course Button -->
+                    <button class="sangaia-btn" style="margin-top:10px; width:100%;" 
+                            onclick="openCourse('${safeName}', '${safeInst}', '${safeGrade}')">
+                        <span>Go to course</span>
+                    </button>
                 `;
                 container.appendChild(card);
             });
@@ -243,6 +446,65 @@
             // Show this if the database query succeeds but returns 0 rows
             container.style.display = 'none';
             noCoursesMsg.style.display = 'block';
+        }
+    }
+
+    // ==========================================
+    // COURSE VIEW NAVIGATION LOGIC
+    // ==========================================
+
+    // Opens the detailed course view and hides the dashboard selection
+    function openCourse(courseName, instructor, grade) {
+        // Update DOM elements with specific course data
+        document.getElementById('course-name-display').textContent = courseName;
+        document.getElementById('course-instructor-display').textContent = instructor;
+        document.getElementById('course-grade-display').textContent = grade;
+        
+        // Hide list view, show detailed course view
+        document.getElementById('dashboard-selection-view').style.display = 'none';
+        document.getElementById('course-detail-view').style.display = 'flex';
+        
+        // Default to showing the homepage tab
+        showTab('homepage');
+    }
+
+    // Returns back to the list view
+    function closeCourse() {
+        document.getElementById('course-detail-view').style.display = 'none';
+        document.getElementById('dashboard-selection-view').style.display = 'block';
+    }
+
+    // Handles the left sidebar navigation
+    function showTab(tabId) {
+        // Hide all tabs
+        document.getElementById('tab-homepage').style.display = 'none';
+        document.getElementById('tab-gradebook').style.display = 'none';
+        document.getElementById('tab-assignments').style.display = 'none';
+        
+        // Remove active styling from all sidebar links
+        document.getElementById('nav-homepage').classList.remove('active');
+        document.getElementById('nav-gradebook').classList.remove('active');
+        document.getElementById('nav-assignments').classList.remove('active');
+        
+        // Grab current course name memory
+        const courseName = document.getElementById('course-name-display').textContent;
+        const viewTitle = document.getElementById('view-title');
+        
+        // Show selected tab and update Title headers to match mockups
+        if (tabId === 'homepage') {
+            document.getElementById('tab-homepage').style.display = 'grid'; // Homepage uses CSS grid
+            document.getElementById('nav-homepage').classList.add('active');
+            viewTitle.innerHTML = `Welcome back to <span id="course-name-display" style="color: var(--moe-amber);">${courseName}</span>.`;
+        } 
+        else if (tabId === 'gradebook') {
+            document.getElementById('tab-gradebook').style.display = 'block';
+            document.getElementById('nav-gradebook').classList.add('active');
+            viewTitle.innerHTML = `Gradebook <span id="course-name-display" style="display:none;">${courseName}</span>`; // Hidden to keep memory
+        } 
+        else if (tabId === 'assignments') {
+            document.getElementById('tab-assignments').style.display = 'block';
+            document.getElementById('nav-assignments').classList.add('active');
+            viewTitle.innerHTML = `Assignments <span id="course-name-display" style="display:none;">${courseName}</span>`; // Hidden to keep memory
         }
     }
 </script>
