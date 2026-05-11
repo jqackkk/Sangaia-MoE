@@ -151,10 +151,12 @@
                         <strong>Database Disconnected:</strong> You must insert your Supabase URL and Anon Key into the HTML code for this button to work!
                     </div>
 
-                    <p>Please authenticate using your linked Google Cloud account to access your educational records, save your academic progress, and manage your subventions.</p>
+                    <p>Enter your email below to receive a secure Magic Login Link. No password required!</p>
                     
                     <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.02); border-radius: 8px;">
-                        <button class="sangaia-btn" onclick="signInWithGoogle()"><span>Log In with Google</span></button>
+                        <input type="email" id="email-input" placeholder="student@sangaia.gov" style="padding: 10px; width: 60%; max-width: 300px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px;"><br>
+                        <button class="sangaia-btn" onclick="signInWithEmail()" id="login-btn"><span>Send Magic Link</span></button>
+                        <p id="login-msg" style="color: green; font-weight: bold; display: none; margin-top: 10px;">Link sent! Please check your email.</p>
                     </div>
                 </div>
 
@@ -232,21 +234,45 @@
         warningBanner.style.display = 'block';
     }
 
-    // Google Sign-In
-    async function signInWithGoogle() {
+    // Check for hidden authentication errors in the URL
+    window.onload = function() {
+        const hash = window.location.hash;
+        if (hash && hash.includes('error_description')) {
+            const urlParams = new URLSearchParams(hash.substring(1));
+            alert("Login Error: " + urlParams.get('error_description').replace(/\+/g, ' '));
+        }
+    };
+
+    // Email Magic Link Sign-In (Replaces Google OAuth)
+    async function signInWithEmail() {
         if (!supabase) {
             alert("Database is not connected! Please add your URL and Key to the HTML file.");
             return;
         }
 
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
+        const email = document.getElementById('email-input').value;
+        if (!email) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
+        const btnText = document.querySelector('#login-btn span');
+        btnText.textContent = "Sending...";
+
+        const { data, error } = await supabase.auth.signInWithOtp({
+            email: email,
             options: {
-                // Forces Google to redirect exactly back to this portal
-                redirectTo: window.location.origin + window.location.pathname
+                emailRedirectTo: window.location.origin + window.location.pathname
             }
         });
-        if (error) alert("Error logging in: " + error.message);
+
+        if (error) {
+            alert("Error: " + error.message);
+            btnText.textContent = "Send Magic Link";
+        } else {
+            btnText.textContent = "Send Magic Link";
+            document.getElementById('login-msg').style.display = 'block';
+        }
     }
 
     // Sign Out
