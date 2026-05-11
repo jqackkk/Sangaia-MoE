@@ -29,7 +29,7 @@
             color: var(--text-dark);
         }
 
-        .main-container { width: 100%; margin: 0; background: transparent; padding: 0; flex-grow: 1; }
+        .main-container { width: 100%; margin: 0; background: transparent; padding: 0; flex-grow: 1; display: flex; flex-direction: column; }
 
         header {
             background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%);
@@ -101,7 +101,15 @@
         }
         .sangaia-btn.active span, .sangaia-btn:active span { text-shadow: 0 1px 2px rgba(100, 40, 0, 0.6); }
 
-        .content-wrapper { background: transparent; padding: 30px; width: 100%; box-sizing: border-box; }
+        .content-wrapper { 
+            background: transparent; 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 1400px; 
+            margin: 0 auto;
+            box-sizing: border-box; 
+            flex-grow: 1;
+        }
         
         .glass-panel {
             background: linear-gradient(to bottom, #fcfcfc 0%, #f1f1f1 100%);
@@ -116,20 +124,48 @@
         .course-card h3 { margin-top: 0; color: #d35400; font-size: 1.2em; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
         .course-grade { position: absolute; top: 15px; right: 15px; font-weight: bold; background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; border: 1px solid #a5d6a7;}
 
-        /* VERTICAL METAL SIDEBAR NAVIGATION */
-        .vertical-metal-nav {
-            background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
-            border: 1px solid #000;
-            border-radius: 8px;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 4px rgba(0,0,0,0.4);
-            overflow: hidden;
-            margin-bottom: 20px;
+
+        /* =======================================
+           APP MODE STYLES (Overrides for full screen)
+           ======================================= */
+        body.app-mode #main-site-header,
+        body.app-mode #globalheader,
+        body.app-mode footer {
+            display: none !important;
         }
+
+        body.app-mode .content-wrapper {
+            padding: 0 !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #course-detail-view {
+            display: flex;
+            width: 100%;
+            flex-grow: 1;
+            min-height: 100vh;
+        }
+
+        /* VERTICAL FULL-HEIGHT METAL SIDEBAR */
+        .app-sidebar {
+            width: 260px;
+            flex-shrink: 0;
+            background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
+            border-right: 1px solid #000;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+        
         .sidebar-account-info {
-            padding: 20px;
+            padding: 25px 20px;
             border-bottom: 1px solid #111;
-            text-align: center;
-            background: rgba(0,0,0,0.2);
+            text-align: left; /* Left Aligned */
+            background: rgba(0,0,0,0.25);
             box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05);
         }
         .sidebar-account-info h3 {
@@ -138,31 +174,54 @@
         .sidebar-account-info p {
             margin: 5px 0 0 0; font-size: 0.85em; color: #aaa; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); word-break: break-all;
         }
+
         .sidebar-nav-metal {
             list-style: none; padding: 0; margin: 0;
         }
         .sidebar-nav-metal li {
-            position: relative;
             border-bottom: 1px solid #111;
             border-top: 1px solid rgba(255,255,255,0.08);
         }
-        .sidebar-nav-metal li:last-child {
-            border-bottom: none;
-        }
         .sidebar-nav-metal li a {
-            display: block; padding: 15px 20px; text-decoration: none; 
+            display: block; padding: 16px 20px; text-decoration: none; 
             color: #e8e8e8; font-weight: bold; text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
             transition: background 0.2s, color 0.2s, text-shadow 0.2s;
+            text-align: left; /* Left Aligned */
         }
         .sidebar-nav-metal li a:hover {
             color: #fff; background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0));
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8);
         }
         .sidebar-nav-metal li a.active {
-            color: #fff; background: rgba(0,0,0,0.3); 
+            color: #fff; 
+            background: rgba(0,0,0,0.3); /* Same unpressed/pressed style as top nav */
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
-            border-left: 4px solid #d35400; /* Amber highlight to fit theme */
+            /* Removed Orange border */
         }
+
+        /* Buttons fixed to the bottom of the sidebar */
+        .sidebar-bottom-actions {
+            margin-top: auto; 
+            padding: 20px;
+            background: rgba(0,0,0,0.15);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-bottom-actions .sangaia-btn {
+            width: 100%; margin: 0 0 12px 0;
+        }
+        .sidebar-bottom-actions .sangaia-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        /* The right side content area inside App mode */
+        .app-main-content {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            max-height: 100vh;
+            box-sizing: border-box;
+        }
+
 
         /* COURSE HOMEPAGE GRID */
         .course-homepage-grid {
@@ -190,7 +249,6 @@
 <body>
 
 <div class="main-container">
-    <!-- ADDED ID to hide/show during course view -->
     <header id="main-site-header">
         <h1>Ministry of Education</h1>
         <div class="subtitle">Provincial Course Dashboard</div>
@@ -205,7 +263,7 @@
         </ul>
     </nav>
 
-    <div class="content-wrapper" style="max-width: 1400px; margin: 0 auto;">
+    <div class="content-wrapper">
         
         <!-- ========================================== -->
         <!-- STATE 1: DASHBOARD SELECTION VIEW -->
@@ -216,7 +274,6 @@
                     <h2>Student Dashboard</h2>
                     <p style="margin:0;">Enrolled Student: <strong id="student-email">Loading...</strong></p>
                 </div>
-                <!-- .active class removed -->
                 <a href="portal.html" class="sangaia-btn"><span>Back to Portal</span></a>
             </div>
 
@@ -236,38 +293,39 @@
         </div>
 
         <!-- ========================================== -->
-        <!-- STATE 2: COURSE DETAIL VIEW -->
+        <!-- STATE 2: COURSE DETAIL VIEW (APP MODE) -->
         <!-- ========================================== -->
-        <div id="course-detail-view" style="display: none; flex-wrap: wrap; gap: 20px;">
+        <div id="course-detail-view" style="display: none;">
             
-            <!-- LEFT SIDEBAR (Metal Nav & Account Info) -->
-            <div style="flex: 1 1 250px; max-width: 300px; display: flex; flex-direction: column; gap: 10px;">
+            <!-- LEFT SIDEBAR: Full height, metal styling, buttons at bottom -->
+            <div class="app-sidebar">
                 
-                <div class="vertical-metal-nav">
-                    <!-- Account Info Block -->
-                    <div class="sidebar-account-info">
-                        <h3>Account Info</h3>
-                        <p id="sidebar-username">student@sangaia.gov</p>
-                    </div>
-                    <!-- Navigation Links -->
-                    <ul class="sidebar-nav-metal">
-                        <li><a href="javascript:void(0)" onclick="showTab('homepage')" id="nav-homepage" class="active">Course Homepage</a></li>
-                        <li><a href="javascript:void(0)" onclick="showTab('gradebook')" id="nav-gradebook">Gradebook</a></li>
-                        <li><a href="javascript:void(0)" onclick="showTab('assignments')" id="nav-assignments">Assignments</a></li>
-                    </ul>
+                <!-- Account Info Block (Top) -->
+                <div class="sidebar-account-info">
+                    <h3>Account Info</h3>
+                    <p id="sidebar-username">student@sangaia.gov</p>
                 </div>
                 
-                <!-- Action Buttons -->
-                <button class="sangaia-btn" onclick="closeCourse()" style="width: 100%; margin: 0; margin-bottom: 5px;"><span>&larr; Back to Dashboard</span></button>
-                <button class="sangaia-btn" onclick="signOutFromCourse()" style="width: 100%; margin: 0;"><span>Sign Out</span></button>
+                <!-- Navigation Links (Middle/Top) -->
+                <ul class="sidebar-nav-metal">
+                    <li><a href="javascript:void(0)" onclick="showTab('homepage')" id="nav-homepage" class="active">Course Homepage</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('gradebook')" id="nav-gradebook">Gradebook</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('assignments')" id="nav-assignments">Assignments</a></li>
+                </ul>
+                
+                <!-- Action Buttons (Bottom) -->
+                <div class="sidebar-bottom-actions">
+                    <button class="sangaia-btn" onclick="closeCourse()"><span>&larr; Back to Dashboard</span></button>
+                    <button class="sangaia-btn" onclick="signOutFromCourse()"><span>Sign Out</span></button>
+                </div>
             </div>
 
             <!-- RIGHT MAIN CONTENT AREA -->
-            <div style="flex: 3 1 600px;">
+            <div class="app-main-content">
                 
                 <!-- Top Header for Course -->
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;">
-                    <h2 id="view-title" style="margin: 0; font-size: 2em; color: #2c3e50;">Welcome back to <span id="course-name-display" style="color: var(--moe-amber);">Course</span>.</h2>
+                    <h2 id="view-title" style="margin: 0; font-size: 2.2em; color: #2c3e50;">Welcome back to <span id="course-name-display" style="color: var(--moe-amber);">Course</span>.</h2>
                     <div class="glass-panel" style="margin: 0; padding: 10px 20px; box-shadow: none; background: rgba(255,255,255,0.6);">
                         <span style="color: #555; font-size: 0.9em;">Instructor:</span> <strong id="course-instructor-display" style="color: var(--text-dark);">TBD</strong>
                     </div>
@@ -473,7 +531,6 @@
                     <div class="course-grade">${course.grade || 'N/A'}</div>
                     <p><strong>Instructor:</strong> ${course.instructor || 'TBD'}</p>
                     <p style="font-size: 0.85em; color: #888;">ID: ${course.id}</p>
-                    <!-- UPDATED: Go To Course Button -->
                     <button class="sangaia-btn" style="margin-top:10px; width:100%;" 
                             onclick="openCourse('${safeName}', '${safeInst}', '${safeGrade}')">
                         <span>Go to course</span>
@@ -499,9 +556,8 @@
         document.getElementById('course-instructor-display').textContent = instructor;
         document.getElementById('course-grade-display').textContent = grade;
         
-        // HIDE MAIN SITE HEADER & GLOBAL NAV as requested
-        document.getElementById('main-site-header').style.display = 'none';
-        document.getElementById('globalheader').style.display = 'none';
+        // Add App Mode class to transform the layout to full screen
+        document.body.classList.add('app-mode');
         
         // Hide list view, show detailed course view
         document.getElementById('dashboard-selection-view').style.display = 'none';
@@ -513,9 +569,8 @@
 
     // Returns back to the list view
     function closeCourse() {
-        // RESTORE MAIN SITE HEADER & GLOBAL NAV
-        document.getElementById('main-site-header').style.display = 'block';
-        document.getElementById('globalheader').style.display = 'block';
+        // Remove App Mode class to restore global header/nav and layout limits
+        document.body.classList.remove('app-mode');
         
         document.getElementById('course-detail-view').style.display = 'none';
         document.getElementById('dashboard-selection-view').style.display = 'block';
