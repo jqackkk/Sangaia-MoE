@@ -179,14 +179,14 @@
     const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; // e.g., 'https://xyz.supabase.co'
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZGRpdHN1b21panN4eWxkcGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDU0NjYsImV4cCI6MjA5NDA4MTQ2Nn0.2ZNOqYpVGD11ttSW8qwOSlFQzwP10ys7TUreh7YiCxU';
 
-    let supabase;
+    let supabaseClient;
     const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
 
     if (keysValid && window.supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Setup Auth Listener to ensure they are logged in to view the dashboard
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
                 // User is authenticated
                 document.getElementById('student-email').textContent = session.user.email;
@@ -202,11 +202,11 @@
 
     // This function fetches specifically from a table named 'courses' matching this user's ID
     async function fetchUserCourses(userId) {
-        if (!supabase) return;
+        if (!supabaseClient) return;
 
         // Make sure you create a table in Supabase called 'courses' with these columns:
         // 'user_id' (uuid), 'course_name' (text), 'instructor' (text), 'grade' (text)
-        const { data: courses, error } = await supabase
+        const { data: courses, error } = await supabaseClient
             .from('courses')
             .select('*')
             .eq('user_id', userId);
@@ -244,4 +244,4 @@
 </script>
 
 </body>
-</html>
+</html> 
