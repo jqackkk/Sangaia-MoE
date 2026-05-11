@@ -244,14 +244,15 @@
     const warningBanner = document.getElementById('missing-keys-warning');
     const authMsg = document.getElementById('auth-msg');
 
-    let supabase;
+    let supabaseClient;
     const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
 
     if (keysValid && window.supabase) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Changed variable to supabaseClient to avoid conflict with the global supabase object from the CDN
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Setup Auth Listener
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
                 // User is logged in
                 authSection.style.display = 'none';
@@ -286,7 +287,7 @@
 
     // Log In (Email & Password)
     async function logIn() {
-        if (!supabase) return showAuthMessage("Database is not connected.");
+        if (!supabaseClient) return showAuthMessage("Database is not connected.");
         
         const email = document.getElementById('email-input').value;
         const password = document.getElementById('password-input').value;
@@ -297,7 +298,7 @@
         btnText.textContent = "Logging In...";
         authMsg.style.display = 'none';
 
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: email,
             password: password
         });
@@ -309,7 +310,7 @@
 
     // Sign Up (Email & Password)
     async function signUp() {
-        if (!supabase) return showAuthMessage("Database is not connected.");
+        if (!supabaseClient) return showAuthMessage("Database is not connected.");
         
         const email = document.getElementById('email-input').value;
         const password = document.getElementById('password-input').value;
@@ -321,7 +322,7 @@
         btnText.textContent = "Creating...";
         authMsg.style.display = 'none';
 
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error } = await supabaseClient.auth.signUp({
             email: email,
             password: password
         });
@@ -338,16 +339,16 @@
 
     // Sign Out
     async function signOut() {
-        if (!supabase) return;
-        const { error } = await supabase.auth.signOut();
+        if (!supabaseClient) return;
+        const { error } = await supabaseClient.auth.signOut();
         if (error) alert("Error signing out.");
         progressData.value = ''; // clear data
     }
 
     // Fetch existing progress
     async function fetchProgress(userId) {
-        if (!supabase) return;
-        const { data, error } = await supabase
+        if (!supabaseClient) return;
+        const { data, error } = await supabaseClient
             .from('student_progress')
             .select('progress_notes')
             .eq('user_id', userId)
@@ -360,13 +361,13 @@
 
     // Save/Update progress
     async function saveProgress() {
-        if (!supabase) return;
-        const { data: { user } } = await supabase.auth.getUser();
+        if (!supabaseClient) return;
+        const { data: { user } } = await supabaseClient.auth.getUser();
         if (!user) return;
 
         saveBtn.querySelector('span').textContent = 'Saving...';
         
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('student_progress')
             .upsert({ 
                 user_id: user.id, 
