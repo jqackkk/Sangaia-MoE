@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ministry of Education - Sangaia</title>
+    <style>
+        /* --- AMBER / YELLOW THEME STYLES --- */
+        :root {
+            --glass-amber: rgba(255, 245, 230, 0.85);
+            --moe-amber: #d35400; 
+            --moe-light-amber: #f39c12;
+            --text-dark: #2c3e50;
+            --stripes: repeating-linear-gradient(0deg, #f2f2f2, #f2f2f2 1px, #ffffff 1px, #ffffff 2px);
+        }
+
+        body {
+            background: var(--stripes);
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: column;
+            margin: 0;
+            font-family: 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+        }
+
+        .main-container { width: 100%; margin: 0; background: transparent; padding: 0; flex-grow: 1; }
+
+        /* HEADER - AMBER THEME */
+        header {
+            background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 3px solid #a04000;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        header::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            pointer-events: none;
+        }
+
+        h1 { margin: 0; font-size: 2.5em; letter-spacing: -1px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; margin-top: 5px; font-weight: normal; }
+
+        /* METAL NAV */
+        #globalheader {
+            width: 100%; height: 38px;
+            background: linear-gradient(to bottom, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
+            border-top: 1px solid #222; border-bottom: 1px solid #000;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 11px; position: relative; z-index: 99;
+        }
+
+        #globalnav { margin: 0; padding: 0; list-style: none; display: flex; justify-content: center; height: 100%; }
+        #globalnav li { position: relative; height: 100%; display: flex; align-items: center; }
+        #globalnav li::after { content: ""; position: absolute; right: 0; width: 1px; height: 100%; background: linear-gradient(#333, #111); box-shadow: 1px 0 0 rgba(255,255,255,0.08); }
+        #globalnav li:first-child::before { content: ""; position: absolute; left: 0; width: 1px; height: 100%; background: linear-gradient(#333, #111); box-shadow: 1px 0 0 rgba(255,255,255,0.08); }
+        #globalnav li:last-child::after { display: block; }
+
+        #globalnav li a {
+            display: block; color: #e8e8e8; text-decoration: none; text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
+            font-weight: bold; padding: 0 24px; line-height: 38px;
+            transition: text-shadow 0.2s ease;
+        }
+        
+        #globalnav li a:hover { 
+            color: #fff; 
+            background: linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0));
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8); 
+        }
+        
+        #globalnav li a.active { color: #fff; background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+
+        /* AMBER BUTTONS */
+        .sangaia-btn {
+            font-size: 0.9rem; font-family: sans-serif; height: 2.5em; padding: 0 1em; width: 15em;
+            border-radius: 1000px; position: relative; overflow: hidden; cursor: pointer; border: none;
+            text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+            margin: 5px; transition: all 0.1s ease-out; box-sizing: border-box;
+            background: linear-gradient(rgba(160, 160, 160, 0.625), rgba(255, 255, 255, 0.625));
+            box-shadow: 0 0.375em 0.5em rgba(0, 0, 0, 0.2), inset 0 0.25em 0.25em rgba(0, 0, 0, 0.4), inset 0 0.375em 0.5em 0.25em #BBBBBB;
+            color: #333; font-weight: bold;
+        }
+        .sangaia-btn::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); width: calc(100% - 0.875em); border-radius: 2em 2em 0.5em 0.5em; top: 5%; filter: blur(1px); z-index: 2; }
+        .sangaia-btn::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.2), rgb(255, 255, 255, 0.5)); width: calc(100% - 1.25em); border-radius: 0.75em; bottom: 10%; filter: blur(3px); }
+        .sangaia-btn span { position: relative; z-index: 3; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        .sangaia-btn:hover { filter: brightness(1.05); }
+
+        /* ACTIVE AMBER BUTTON STATE */
+        .sangaia-btn.active, .sangaia-btn:active {
+            background: linear-gradient(rgba(211, 84, 0, 0.8), rgba(243, 156, 18, 0.8), rgba(211, 84, 0, 0.8));
+            box-shadow: 0 0.375em 0.5em rgba(0, 0, 0, 0.3), inset 0 0.25em 0.5em rgba(100, 40, 0, 0.8), 0 0 0.5em rgba(243, 156, 18, 0.5);
+            color: white; transform: translateY(1px); border: 1px solid #a04000;
+        }
+        .sangaia-btn.active span, .sangaia-btn:active span { text-shadow: 0 1px 2px rgba(100, 40, 0, 0.6); }
+
+        .content-wrapper { background: transparent; padding: 30px; width: 100%; box-sizing: border-box; }
+
+        .glass-panel {
+            background: linear-gradient(to bottom, #fcfcfc 0%, #f1f1f1 100%);
+            border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 1px 0 #fff;
+        }
+        .glass-panel h2 { margin-top: 0; color: var(--moe-amber); border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.4em; }
+        
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { .content-grid { grid-template-columns: 2fr 1fr; } }
+
+        footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
+        p { line-height: 1.6; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <header>
+        <h1>Ministry of Education</h1>
+        <div class="subtitle">Cultivating the Minds of the Republic</div>
+    </header>
+
+    <nav id="globalheader">
+        <ul id="globalnav">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="portal.html">Student Portal</a></li>
+            <li><a href="finance.html">Financial Secretary</a></li>
+            <li><a href="divisions.html">Divisions</a></li>
+        </ul>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="content-grid">
+            
+            <div class="main-col">
+                <div class="glass-panel">
+                    <h2>Knowledge & Reason</h2>
+                    <p>
+                        The Ministry of Education oversees what is taught to students in public schools and administrates the funding allocated to state-sponsored education centers, such as provincial colleges and high schools.
+                    </p>
+                    <p>
+                        As established in <strong>Article Nine</strong> of the Constitution, public funds are reserved exclusively for public primary, secondary, and tertiary schools. We ensure that our curriculum remains rooted in the principles of Virtue and the light of Reason.
+                    </p>
+                </div>
+
+                <div class="glass-panel">
+                    <h2>Latest Directives</h2>
+                    <div style="background: rgba(243, 156, 18, 0.1); padding: 15px; border-left: 4px solid var(--moe-amber); border-radius: 4px;">
+                        <strong>Portal Update:</strong> The unified Student Portal is now live. Students may authenticate using their secure credentials to log their academic progress and save their institutional records.
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-col">
+                <!-- AMBER SIDEBAR PANEL -->
+                <div class="glass-panel" style="background: linear-gradient(to bottom, #fcf3cf 0%, #f8c471 100%);">
+                    <h2 style="color: #9c640c;">Digital Learning</h2>
+                    <p style="color: #7e5109; font-size: 0.9em;">Access your coursework, track your academic progress, and manage your Writ of Tuition directly online.</p>
+                    <a href="moeportal.html" class="sangaia-btn" style="width: 100%;"><span>Log In to Portal</span></a>
+                </div>
+
+                <div class="glass-panel">
+                    <h2>Public Funding</h2>
+                    <ul style="padding-left: 20px; color: var(--moe-amber);">
+                        <li>Refunding Clause Info</li>
+                        <li>Provincial Subventions</li>
+                        <li>Writ of Tuition Status</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Ministry of Education - United Provinces of Sangaia
+    </footer>
+</div>
+</body>
+</html>
