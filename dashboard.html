@@ -118,6 +118,9 @@
         }
         .glass-panel h2 { margin-top: 0; color: var(--moe-amber); border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.4em; }
 
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { .content-grid { grid-template-columns: 2fr 1fr; } }
+
         /* SELECTION GRID */
         .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-top: 20px; justify-content: center; }
         .course-card { background: rgba(255,255,255,0.9); border: 1px solid #ccc; border-radius: 6px; padding: 15px; position: relative; }
@@ -255,26 +258,58 @@
         <!-- STATE 1: DASHBOARD SELECTION VIEW -->
         <!-- ========================================== -->
         <div id="dashboard-selection-view">
-            <div class="glass-panel" id="header-panel" style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h2>Student Dashboard</h2>
-                    <p style="margin:0;">Enrolled Student: <strong id="student-email">Loading...</strong></p>
-                </div>
-                <a href="portal.html" class="sangaia-btn"><span>Back to Portal</span></a>
-            </div>
+            <div class="content-grid">
+                <div class="main-col">
+                    <div class="glass-panel" id="header-panel" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2>Student Dashboard</h2>
+                            <p style="margin:0;">Enrolled Student: <strong id="student-email">Loading...</strong></p>
+                        </div>
+                        <button class="sangaia-btn" onclick="signOutFromCourse()"><span>Sign Out</span></button>
+                    </div>
 
-            <div class="glass-panel">
-                <h2>Current Course Enrollments</h2>
-                
-                <div id="loader">Securely fetching your specific courses from the database...</div>
-                
-                <div class="course-grid" id="course-container" style="display: none;">
-                    <!-- Courses injected via Javascript -->
+                    <div class="glass-panel">
+                        <h2>Current Course Enrollments</h2>
+                        
+                        <div id="loader">Securely fetching your specific courses from the database...</div>
+                        
+                        <div class="course-grid" id="course-container" style="display: none;">
+                            <!-- Courses injected via Javascript -->
+                        </div>
+
+                        <p id="no-courses-msg" style="display: none; text-align: center; padding: 40px; color: #777;">
+                            You are not currently enrolled in any provincial courses. Use the catalog below to add a course.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel">
+                        <h2>Course Catalog</h2>
+                        <p>Available provincial courses for this semester. Click to enroll.</p>
+                        <div class="course-grid">
+                            <div class="division-card course-card">
+                                <h3>Constitution 101</h3>
+                                <p><strong>Instructor:</strong> Instructor</p>
+                                <button class="sangaia-btn" style="margin-top:10px; width:100%;"><span>Add Course</span></button>
+                            </div>
+                            <div class="division-card course-card">
+                                <h3>Aeretocratic Ethics 201</h3>
+                                <p><strong>Instructor:</strong> Minister Vance</p>
+                                <button class="sangaia-btn" style="margin-top:10px; width:100%;"><span>Add Course</span></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <p id="no-courses-msg" style="display: none; text-align: center; padding: 40px; color: #777;">
-                    You are not currently enrolled in any provincial courses. Contact your academic advisor.
-                </p>
+                <div class="sidebar-col">
+                    <div class="glass-panel" style="background: linear-gradient(to bottom, #fcf3cf 0%, #f8c471 100%);">
+                        <h2 style="color: #9c640c;">Ministry Contact</h2>
+                        <p style="color: #7e5109; font-size: 0.9em;">For enrollment issues or transcript requests, please contact the Ministry.</p>
+                        <ul style="color: #7e5109; padding-left: 20px;">
+                            <li><strong>Email:</strong> upos.edu@gmail.com</li>
+                            <li><strong>Hours:</strong> 08:00 - 16:00</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
