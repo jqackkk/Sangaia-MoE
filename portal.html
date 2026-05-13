@@ -121,18 +121,6 @@
         #auth-section { display: block; } 
         #portal-section { display: none; }
 
-        /* POPUP MODAL STYLES */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;
-            backdrop-filter: blur(3px);
-        }
-        .modal-content {
-            background: linear-gradient(to bottom, #fcfcfc 0%, #f1f1f1 100%);
-            padding: 30px; border-radius: 8px; text-align: center; border: 1px solid #ddd;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 1px 0 #fff; max-width: 400px; width: 90%;
-        }
-
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
         p { line-height: 1.6; margin-bottom: 15px; }
     </style>
@@ -174,40 +162,19 @@
                         
                         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
                             <button class="sangaia-btn" onclick="logIn()" id="login-btn"><span>Log In</span></button>
-                            <button class="sangaia-btn" onclick="signUp()" id="signup-btn"><span>Create Account</span></button>
                         </div>
                         
                         <p id="auth-msg" style="color: #c0392b; font-weight: bold; display: none; margin-top: 15px;"></p>
                     </div>
-                </div>
 
-                <!-- PORTAL SECTION -->
-                <div class="glass-panel" id="portal-section" style="display: none;">
-                    <h2>Academic Progress Tracker</h2>
-                    <p>Welcome back, <strong id="user-email">Student</strong>. You may update your current academic records and save your progress directly to the provincial database.</p>
-                    
-                    <textarea id="progress-data" placeholder="Enter your current coursework, notes, or academic milestones here..."></textarea>
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <button class="sangaia-btn" onclick="saveProgress()" id="save-btn"><span>Save Progress</span></button>
-                        <span id="save-status" style="color: green; font-size: 0.9em; font-weight: bold; display: none;">Successfully Saved!</span>
-                    </div>
-
-                    <!-- LINK TO THE NEW DASHBOARD PAGE -->
-                    <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
-                        <p>Need to view your enrolled classes and grades?</p>
-                        <a href="dashboard.html" class="sangaia-btn active" style="width: auto;"><span>Open Course Dashboard</span></a>
+                    <div style="margin-top: 25px; padding: 15px; background: rgba(243, 156, 18, 0.1); border: 1px solid #f39c12; border-radius: 6px; text-align: center;">
+                        <h3 style="color: #d35400; margin-top: 0; font-size: 1.1em; margin-bottom: 5px;">Looking to make an account?</h3>
+                        <p style="font-size: 0.9em; color: #555; margin: 0;">Send an e-mail to <strong>upos.edu@gmail.com</strong> to register for an account.</p>
                     </div>
                 </div>
             </div>
-
-            <div class="sidebar-col">
-                <div class="glass-panel" style="background: linear-gradient(to bottom, #fcf3cf 0%, #f8c471 100%);">
-                    <h2 style="color: #9c640c;">Account Settings</h2>
-                    <p style="color: #7e5109; font-size: 0.9em;">Ensure your connection to the cloud is active.</p>
-                    <button class="sangaia-btn" id="logout-btn" onclick="signOut()" style="width: 100%; display: none;"><span>Sign Out</span></button>
-                </div>
-            </div>
+            
+            <!-- Removed the sidebar-col completely since this is just a login page now -->
 
         </div>
     </div>
@@ -217,30 +184,12 @@
     </footer>
 </div>
 
-<!-- SUCCESS POPUP MODAL -->
-<div class="modal-overlay" id="success-modal">
-    <div class="modal-content">
-        <h2 style="color: #27ae60; margin-top: 0; border-bottom: none;">Account Created!</h2>
-        <p>Your student account has been successfully registered in the Sangaia provincial database.</p>
-        <button class="sangaia-btn active" onclick="closeModal()"><span>Continue to Portal</span></button>
-    </div>
-</div>
-
 <!-- SUPABASE INTEGRATION LOGIC -->
 <script>
-    // =========================================================================
-    // IMPORTANT: ENTER YOUR SUPABASE CREDENTIALS HERE
-    // =========================================================================
-    const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; // e.g., 'https://xyz.supabase.co'
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZGRpdHN1b21panN4eWxkcGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDU0NjYsImV4cCI6MjA5NDA4MTQ2Nn0.2ZNOqYpVGD11ttSW8qwOSlFQzwP10ys7TUreh7YiCxU';
+    const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'YOUR_KEY_IS_STILL_SAFE_HERE';
 
     const authSection = document.getElementById('auth-section');
-    const portalSection = document.getElementById('portal-section');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userEmailDisplay = document.getElementById('user-email');
-    const progressData = document.getElementById('progress-data');
-    const saveStatus = document.getElementById('save-status');
-    const saveBtn = document.getElementById('save-btn');
     const warningBanner = document.getElementById('missing-keys-warning');
     const authMsg = document.getElementById('auth-msg');
 
@@ -248,30 +197,22 @@
     const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
 
     if (keysValid && window.supabase) {
-        // Changed variable to supabaseClient to avoid conflict with the global supabase object from the CDN
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         // Setup Auth Listener
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
-                // User is logged in
-                authSection.style.display = 'none';
-                portalSection.style.display = 'block';
-                logoutBtn.style.display = 'inline-flex';
-                userEmailDisplay.textContent = session.user.email;
-                fetchProgress(session.user.id);
+                // If logged in, instantly teleport the user to the Dashboard
+                window.location.href = 'dashboard.html';
             } else {
-                // User is logged out
+                // If not logged in, ensure the login box is visible
                 authSection.style.display = 'block';
-                portalSection.style.display = 'none';
-                logoutBtn.style.display = 'none';
                 document.getElementById('email-input').value = '';
                 document.getElementById('password-input').value = '';
                 authMsg.style.display = 'none';
             }
         });
     } else {
-        // If keys aren't set, show the warning banner
         warningBanner.style.display = 'block';
     }
 
@@ -279,10 +220,6 @@
         authMsg.style.display = 'block';
         authMsg.style.color = color;
         authMsg.textContent = msg;
-    }
-
-    function closeModal() {
-        document.getElementById('success-modal').style.display = 'none';
     }
 
     // Log In (Email & Password)
@@ -307,84 +244,6 @@
 
         if (error) showAuthMessage(error.message);
     }
-
-    // Sign Up (Email & Password)
-    async function signUp() {
-        if (!supabaseClient) return showAuthMessage("Database is not connected.");
-        
-        const email = document.getElementById('email-input').value;
-        const password = document.getElementById('password-input').value;
-        
-        if (!email || !password) return showAuthMessage("Please enter both email and password.");
-        if (password.length < 6) return showAuthMessage("Password must be at least 6 characters.");
-        
-        const btnText = document.querySelector('#signup-btn span');
-        btnText.textContent = "Creating...";
-        authMsg.style.display = 'none';
-
-        const { data, error } = await supabaseClient.auth.signUp({
-            email: email,
-            password: password
-        });
-
-        btnText.textContent = "Create Account";
-
-        if (error) {
-            showAuthMessage(error.message);
-        } else {
-            // SHOW THE POPUP MODAL
-            document.getElementById('success-modal').style.display = 'flex';
-        }
-    }
-
-    // Sign Out
-    async function signOut() {
-        if (!supabaseClient) return;
-        const { error } = await supabaseClient.auth.signOut();
-        if (error) alert("Error signing out.");
-        progressData.value = ''; // clear data
-    }
-
-    // Fetch existing progress
-    async function fetchProgress(userId) {
-        if (!supabaseClient) return;
-        const { data, error } = await supabaseClient
-            .from('student_progress')
-            .select('progress_notes')
-            .eq('user_id', userId)
-            .single();
-
-        if (data) {
-            progressData.value = data.progress_notes || '';
-        }
-    }
-
-    // Save/Update progress
-    async function saveProgress() {
-        if (!supabaseClient) return;
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) return;
-
-        saveBtn.querySelector('span').textContent = 'Saving...';
-        
-        const { error } = await supabaseClient
-            .from('student_progress')
-            .upsert({ 
-                user_id: user.id, 
-                progress_notes: progressData.value,
-                updated_at: new Date().toISOString()
-            });
-
-        saveBtn.querySelector('span').textContent = 'Save Progress';
-
-        if (error) {
-            alert("Error saving: " + error.message);
-        } else {
-            saveStatus.style.display = 'inline';
-            setTimeout(() => { saveStatus.style.display = 'none'; }, 3000);
-        }
-    }
 </script>
-
 </body>
 </html>
