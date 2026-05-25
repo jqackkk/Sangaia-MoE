@@ -574,6 +574,11 @@
             .eq('user_id', currentUser.id)
             .eq('course_name', currentCourse);
 
+        if (error) {
+            console.error("Fetch Error:", error);
+            alert("Error fetching grades: " + error.message);
+        }
+
         currentGrades = (!error && data) ? data : [];
 
         // 1. Dynamically Render Assignments Tab (Hiding completed ones)
@@ -704,7 +709,11 @@
                 .eq('user_id', currentUser.id)
                 .eq('course_name', currentCourse)
                 .eq('assignment_title', title);
-            if (error) console.error(error);
+            
+            if (error) {
+                alert("Database Update Error: " + error.message + "\n\n(Did you disable RLS on the assignment_grades table?)");
+                return false;
+            }
         } else {
             // Insert new grade
             const { error } = await supabaseClient.from('assignment_grades')
@@ -715,7 +724,11 @@
                     score: score,
                     attempts: attempts
                 }]);
-            if (error) console.error(error);
+            
+            if (error) {
+                alert("Database Insert Error: " + error.message + "\n\n(Check that the table is named exactly 'assignment_grades', RLS is disabled, and all columns exist.)");
+                return false;
+            }
         }
         return true;
     }
@@ -746,10 +759,10 @@
         }
     }
 
-    function closeViewer() {
+    async function closeViewer() {
         document.getElementById('viewer-layout').style.display = 'none';
         document.getElementById('course-detail-view').style.display = 'flex';
-        loadGradesAndAssignments(); // Refresh grades in case they just saved a test or lesson!
+        await loadGradesAndAssignments(); // Refresh grades in case they just saved a test or lesson!
     }
 
     // --- LESSON RENDERER ---
@@ -791,12 +804,15 @@
 
     async function markLessonComplete(contentId) {
         const item = curriculum[contentId];
-        await saveGrade(item.title, 100, false); // Lessons get a dummy score of 100
+        const saved = await saveGrade(item.title, 100, false); // Lessons get a dummy score of 100
         
-        if (item.nextStep) {
-            openViewer(item.nextStep); // Launch the next quiz automatically!
-        } else {
-            closeViewer();
+        // Only progress if the database successfully saved the completion
+        if (saved) {
+            if (item.nextStep) {
+                openViewer(item.nextStep); // Launch the next quiz automatically!
+            } else {
+                closeViewer();
+            }
         }
     }
 
@@ -863,11 +879,12 @@
         const scorePercent = Math.round((correctCount / item.questions.length) * 100);
         
         const saved = await saveGrade(item.title, scorePercent, true);
-        if(saved) {
-            alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
-        }
         
-        closeViewer();
+        // Only show success and close if the database actually accepted the grade
+        if (saved) {
+            alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
+            closeViewer();
+        }
     }
 </script>
 
