@@ -194,7 +194,7 @@
     const authMsg = document.getElementById('auth-msg');
 
     let supabaseClient;
-    const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
+    const keysValid = (SUPABASE_URL !== 'https://ugdditsuomijsxyldpkl.supabase.co' && SUPABASE_URL.startsWith('http'));
 
     if (keysValid && window.supabase) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
