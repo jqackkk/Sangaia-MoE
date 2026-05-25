@@ -1,0 +1,79 @@
+{
+  "segments": [
+    {
+      "id": "segment_1",
+      "title": "Segment 1: Provincial Law",
+      "modules": [
+        {
+          "id": "module_1_01",
+          "title": "Module 1: The Foundations",
+          "assignments": [
+            {
+              "id": "lesson_1_01",
+              "title": "1.01 Foundations of Clarity",
+              "type": "lesson",
+              "pages": [
+                "lessons/1.01_page1.html",
+                "lessons/1.01_page2.html"
+              ],
+              "nextStep": "assessment_1_01"
+            },
+            {
+              "id": "assessment_1_01",
+              "title": "1.01 Foundations Quiz",
+              "type": "assessment",
+              "questions": [
+                {
+                  "q": "Which voice should always be used in government writing?",
+                  "options": ["Subjective", "Passive", "Active", "Personal"],
+                  "answer": 2
+                },
+                {
+                  "q": "Why is a standard formatting style necessary?",
+                  "options": ["To confuse the public", "Clarity and consistency", "To save printer ink", "It is not necessary"],
+                  "answer": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "module_1_02",
+          "title": "Module 2: Constitutional Ethics",
+          "assignments": [
+            {
+              "id": "lesson_1_02",
+              "title": "1.02 The Virtue Standard",
+              "type": "lesson",
+              "pages": [
+                "lessons/1.02_page1.html"
+              ],
+              "nextStep": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "segment_2",
+      "title": "Segment 2: International Law",
+      "modules": [
+        {
+          "id": "module_2_01",
+          "title": "Module 4: Trade Agreements",
+          "assignments": [
+            {
+              "id": "lesson_2_01",
+              "title": "2.01 Treaties and Tariffs",
+              "type": "lesson",
+              "pages": [
+                "lessons/2.01_page1.html"
+              ],
+              "nextStep": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
