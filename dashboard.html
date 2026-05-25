@@ -77,7 +77,6 @@
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8); 
         }
         
-        /* Highlight the portal tab since Dashboard is a sub-page of the portal */
         #globalnav li a.active { color: #fff; background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
 
         .sangaia-btn {
@@ -127,112 +126,75 @@
         .course-card h3 { margin-top: 0; color: #d35400; font-size: 1.2em; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
         .course-grade { position: absolute; top: 15px; right: 15px; font-weight: bold; background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; border: 1px solid #a5d6a7;}
 
-
-        /* =======================================
-           APP MODE STYLES (Overrides for full screen)
-           ======================================= */
+        /* APP MODE STYLES */
         body.app-mode #main-site-header,
         body.app-mode #globalheader,
-        body.app-mode footer {
-            display: none !important;
-        }
-
-        body.app-mode .content-wrapper {
-            padding: 0 !important;
-            max-width: 100% !important;
-            margin: 0 !important;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #course-detail-view {
-            display: flex;
-            width: 100%;
-            flex-grow: 1;
-            min-height: 100vh;
-        }
+        body.app-mode footer { display: none !important; }
+        body.app-mode .content-wrapper { padding: 0 !important; max-width: 100% !important; margin: 0 !important; display: flex; flex-direction: column; }
+        
+        #course-detail-view { display: flex; width: 100%; flex-grow: 1; min-height: 100vh; }
 
         /* VERTICAL FULL-HEIGHT METAL SIDEBAR */
         .app-sidebar {
-            width: 220px;
-            flex-shrink: 0;
-            background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
-            border-right: 1px solid #000;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 8px rgba(0,0,0,0.3);
-            z-index: 10;
+            width: 220px; flex-shrink: 0; background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
+            border-right: 1px solid #000; display: flex; flex-direction: column; box-shadow: 2px 0 8px rgba(0,0,0,0.3); z-index: 10;
         }
-        
-        .sidebar-account-info {
-            padding: 25px 20px;
-            border-bottom: 1px solid #111;
-            text-align: left; /* Left Aligned */
-            background: rgba(0,0,0,0.25);
-            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05);
-        }
-        .sidebar-account-info h3 {
-            margin: 0; color: #e8e8e8; font-size: 1.1em; text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
-        }
-        .sidebar-account-info p {
-            margin: 5px 0 0 0; font-size: 0.85em; color: #aaa; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); word-break: break-all;
-        }
+        .sidebar-account-info { padding: 25px 20px; border-bottom: 1px solid #111; text-align: left; background: rgba(0,0,0,0.25); box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05); }
+        .sidebar-account-info h3 { margin: 0; color: #e8e8e8; font-size: 1.1em; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); }
+        .sidebar-account-info p { margin: 5px 0 0 0; font-size: 0.85em; color: #aaa; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); word-break: break-all; }
+        .sidebar-nav-metal { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav-metal li { border-bottom: 1px solid #111; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-nav-metal li a { display: block; padding: 16px 20px; text-decoration: none; color: #e8e8e8; font-weight: bold; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); transition: background 0.2s, color 0.2s, text-shadow 0.2s; text-align: left; }
+        .sidebar-nav-metal li a:hover { color: #fff; background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0)); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8); }
+        .sidebar-nav-metal li a.active { color: #fff; background: rgba(0,0,0,0.3); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
 
-        .sidebar-nav-metal {
-            list-style: none; padding: 0; margin: 0;
-        }
-        .sidebar-nav-metal li {
-            border-bottom: 1px solid #111;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-        .sidebar-nav-metal li a {
-            display: block; padding: 16px 20px; text-decoration: none; 
-            color: #e8e8e8; font-weight: bold; text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
-            transition: background 0.2s, color 0.2s, text-shadow 0.2s;
-            text-align: left; /* Left Aligned */
-        }
-        .sidebar-nav-metal li a:hover {
-            color: #fff; background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0));
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8);
-        }
-        .sidebar-nav-metal li a.active {
-            color: #fff; 
-            background: rgba(0,0,0,0.3); /* Same unpressed/pressed style as top nav */
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
-            /* Removed Orange border */
-        }
-
-        /* The right side content area inside App mode */
-        .app-main-content {
-            flex-grow: 1;
-            padding: 40px;
-            overflow-y: auto;
-            max-height: 100vh;
-            box-sizing: border-box;
-        }
-
-
-        /* COURSE HOMEPAGE GRID */
-        .course-homepage-grid {
-            display: grid; gap: 20px;
-        }
-        @media (min-width: 768px) { 
-            .course-homepage-grid {
-                grid-template-columns: 1fr 2fr;
-                grid-template-rows: auto auto;
-            }
-        }
+        .app-main-content { flex-grow: 1; padding: 40px; overflow-y: auto; max-height: 100vh; box-sizing: border-box; background: #fdfdfd; }
+        .course-homepage-grid { display: grid; gap: 20px; }
+        @media (min-width: 768px) { .course-homepage-grid { grid-template-columns: 1fr 2fr; grid-template-rows: auto auto; } }
 
         /* STATUS BADGES */
         .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85em; display: inline-block; }
         .status-passed { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
         .status-failed { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
         .status-review { background: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
-
         #loader { text-align: center; padding: 50px; color: #888; font-style: italic; }
 
+        /* =======================================
+           UNIFIED VIEWER STYLES (LESSONS & QUIZZES)
+           ======================================= */
+        #viewer-layout { display: none; width: 100%; height: 100vh; flex-direction: column; background: #f4f6f8; z-index: 100; position: fixed; top: 0; left: 0; }
+        .viewer-topbar { 
+            height: 45px; background: linear-gradient(to bottom, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; border-bottom: 2px solid #a04000; box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
+        }
+        .viewer-nav-controls { display: flex; align-items: center; gap: 15px; font-weight: bold; }
+        .viewer-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 4px; padding: 4px 12px; cursor: pointer; transition: all 0.2s; }
+        .viewer-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
+        .viewer-nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .viewer-close-btn { color: #ccc; cursor: pointer; font-size: 1.2em; text-decoration: none; }
+        .viewer-close-btn:hover { color: white; }
+
+        .viewer-content-area { flex-grow: 1; overflow-y: auto; padding: 30px; display: flex; justify-content: center; }
+        .viewer-paper { background: white; width: 100%; max-width: 900px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; border: 1px solid #ddd; padding: 40px; min-height: 600px; }
+        
+        /* Lesson Specific Elements */
+        .lesson-header { color: #2e7d32; font-size: 2em; border-bottom: 2px solid #a5d6a7; padding-bottom: 10px; margin-top: 0; }
+        .lesson-objectives { border: 2px solid #a5d6a7; border-radius: 8px; padding: 20px; margin: 20px 0; background: #f1f8e9; }
+        .lesson-objectives h3 { color: #2e7d32; margin-top: 0; display: flex; align-items: center; gap: 10px; }
+        .lesson-text { font-family: 'Georgia', serif; font-size: 1.1em; line-height: 1.8; color: #333; }
+        
+        /* Quiz Specific Elements */
+        .quiz-header { border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 20px; }
+        .quiz-title { font-size: 1.8em; color: var(--moe-amber); margin: 0 0 10px 0; }
+        .question-box { border: 1px solid #ccc; border-radius: 6px; margin-bottom: 25px; overflow: hidden; }
+        .question-top { background: #f5f5f5; padding: 12px 20px; border-bottom: 1px solid #ccc; font-weight: bold; color: #555; }
+        .question-body { padding: 20px; }
+        .radio-option { display: block; margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .radio-option:hover { background: #f9f9f9; }
+        .radio-option input { margin-right: 10px; }
+        .quiz-submit-box { background: rgba(243, 156, 18, 0.1); padding: 20px; border: 1px solid var(--moe-amber); border-radius: 6px; text-align: center; margin-top: 30px; }
+
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
-        p { line-height: 1.6; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -270,13 +232,8 @@
 
                     <div class="glass-panel">
                         <h2>Current Course Enrollments</h2>
-                        
                         <div id="loader">Securely fetching your specific courses from the database...</div>
-                        
-                        <div class="course-grid" id="course-container" style="display: none;">
-                            <!-- Courses injected via Javascript -->
-                        </div>
-
+                        <div class="course-grid" id="course-container" style="display: none;"></div>
                         <p id="no-courses-msg" style="display: none; text-align: center; padding: 40px; color: #777;">
                             You are not currently enrolled in any provincial courses. Use the catalog below to add a course.
                         </p>
@@ -288,13 +245,8 @@
                         <div class="course-grid">
                             <div class="division-card course-card">
                                 <h3>Constitution 101</h3>
-                                <p><strong>Instructor:</strong> Instructor</p>
-                                <button class="sangaia-btn" style="margin-top:10px; width:100%;"><span>Add Course</span></button>
-                            </div>
-                            <div class="division-card course-card">
-                                <h3>Aeretocratic Ethics 201</h3>
-                                <p><strong>Instructor:</strong> Minister Vance</p>
-                                <button class="sangaia-btn" style="margin-top:10px; width:100%;"><span>Add Course</span></button>
+                                <p><strong>Instructor:</strong> Prof. Thorne</p>
+                                <button class="sangaia-btn" style="margin-top:10px; width:100%;"><span>Request Enrollment</span></button>
                             </div>
                         </div>
                     </div>
@@ -318,35 +270,25 @@
         <!-- ========================================== -->
         <div id="course-detail-view" style="display: none;">
             
-            <!-- LEFT SIDEBAR: Full height, metal styling, buttons at bottom -->
             <div class="app-sidebar">
-                
-                <!-- Account Info Block (Top) -->
                 <div class="sidebar-account-info">
                     <h3>Account Info</h3>
                     <p id="sidebar-username">student@sangaia.gov</p>
                 </div>
-                
-                <!-- Navigation Links (Middle/Top) -->
                 <ul class="sidebar-nav-metal">
                     <li><a href="javascript:void(0)" onclick="showTab('homepage')" id="nav-homepage" class="active">Course Homepage</a></li>
                     <li><a href="javascript:void(0)" onclick="showTab('gradebook')" id="nav-gradebook">Gradebook</a></li>
                     <li><a href="javascript:void(0)" onclick="showTab('assignments')" id="nav-assignments">Assignments</a></li>
                 </ul>
-                
-                <!-- Action Buttons (Bottom) -->
                 <ul class="sidebar-nav-metal" style="margin-top: auto; border-top: 1px solid #111;">
                     <li><a href="javascript:void(0)" onclick="closeCourse()">&larr; Back to Dashboard</a></li>
                     <li><a href="javascript:void(0)" onclick="signOutFromCourse()">Sign Out</a></li>
                 </ul>
             </div>
 
-            <!-- RIGHT MAIN CONTENT AREA -->
             <div class="app-main-content">
-                
-                <!-- Top Header for Course -->
                 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;">
-                    <h2 id="view-title" style="margin: 0; font-size: 2.2em; color: #2c3e50;">Welcome back to <span id="course-name-display" style="color: var(--moe-amber);">Course</span>.</h2>
+                    <h2 id="view-title" style="margin: 0; font-size: 2.2em; color: #2c3e50;">Welcome back.</h2>
                     <div class="glass-panel" style="margin: 0; padding: 10px 20px; box-shadow: none; background: rgba(255,255,255,0.6);">
                         <span style="color: #555; font-size: 0.9em;">Instructor:</span> <strong id="course-instructor-display" style="color: var(--text-dark);">TBD</strong>
                     </div>
@@ -356,82 +298,46 @@
                 <div id="tab-homepage" class="course-homepage-grid">
                     <div class="glass-panel">
                         <h3 style="margin-top:0; color: var(--moe-amber);">Recent Submissions</h3>
-                        <ul style="padding-left: 20px; color: #555; margin-bottom: 0;">
-                            <li style="margin-bottom: 10px;">Module 1 Essay <br><span style="font-size:0.85em; color:#888;">Submitted Oct 12</span></li>
-                            <li>Syllabus Quiz <br><span style="font-size:0.85em; color:#888;">Submitted Oct 10</span></li>
+                        <ul id="recent-subs-list" style="padding-left: 20px; color: #555; margin-bottom: 0;">
+                            <li>No recent submissions.</li>
                         </ul>
                     </div>
-                    
                     <div class="glass-panel">
                         <h3 style="margin-top:0; color: var(--moe-amber);">Score Report</h3>
                         <p style="font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 15px;">
-                            Current Average: <strong id="course-grade-display" style="color: #2e7d32; font-size: 1.2em;">A</strong>
+                            Current Average: <strong id="course-grade-display" style="color: #2e7d32; font-size: 1.2em;">--</strong>
                         </p>
-                        <p style="color: #555;">Your performance tracking indicates you are currently performing within the top 15% of the provincial cohort for this specific module.</p>
+                        <p style="color: #555;">Complete your assessments in the Assignments tab to calculate your standing.</p>
                     </div>
-                    
                     <div class="glass-panel">
                         <h3 style="margin-top:0; color: var(--moe-amber);">Next Deadline</h3>
-                        <p style="color: #555;"><strong>Module 2 Project</strong></p>
-                        <p style="font-size: 0.9em; color: #c0392b; font-weight: bold;">Submit assignment by: 3 Days (11:59 PM)</p>
+                        <p style="color: #555;"><strong>Required Modules</strong></p>
+                        <p style="font-size: 0.9em; color: #c0392b; font-weight: bold;">Self-paced curriculum.</p>
                     </div>
-                    
                     <div class="glass-panel">
                         <h3 style="margin-top:0; color: var(--moe-amber);">Percentage Complete</h3>
-                        <div style="background: #eee; border-radius: 100px; height: 20px; width: 100%; overflow: hidden; margin-top: 15px; border: 1px solid #ccc; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);">
-                            <div style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 25%; height: 100%;"></div>
+                        <div style="background: #eee; border-radius: 100px; height: 20px; width: 100%; overflow: hidden; margin-top: 15px; border: 1px solid #ccc;">
+                            <div id="progress-bar-fill" style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 0%; height: 100%;"></div>
                         </div>
-                        <p style="text-align: right; margin-top: 5px; font-weight: bold; color: #d35400;">25%</p>
-                        <p style="font-size: 0.85em; color: #777; margin:0;">3 of 12 required modules finished.</p>
+                        <p id="progress-text" style="text-align: right; margin-top: 5px; font-weight: bold; color: #d35400;">0%</p>
                     </div>
                 </div>
 
                 <!-- TAB 2: GRADEBOOK -->
                 <div id="tab-gradebook" style="display: none;">
                     <div class="glass-panel">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                            <p style="margin:0; color: #555; max-width: 60%;">A detail of every score received on assignments and tests, along with submission status and dates.</p>
-                            <div>
-                                <span class="status-badge" style="background: #e3f2fd; color: #0277bd; border-color: #81d4fa; margin-right: 5px;">Unweighted GPA: 3.8</span>
-                                <span class="status-badge" style="background: #e3f2fd; color: #0277bd; border-color: #81d4fa;">Weighted GPA: 4.2</span>
-                            </div>
-                        </div>
-                        
+                        <p style="margin:0 0 15px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 15px;">A detail of every score received on assignments and tests.</p>
                         <div style="overflow-x: auto;">
                             <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
                                 <thead>
                                     <tr style="background: rgba(243, 156, 18, 0.1);">
-                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left; color: #d35400;">Date Submitted</th>
                                         <th style="padding: 12px; border: 1px solid #ddd; text-align: left; color: #d35400;">Assignment Title</th>
                                         <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Status</th>
                                         <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Score</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 10, 2026</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Syllabus Quiz</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-passed">Passed</span></td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">100%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 12, 2026</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Module 1 Essay</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-passed">Passed</span></td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">88%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 14, 2026</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Pop Quiz 1</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-failed">Failed</span></td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">60%</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 12px; border: 1px solid #ddd; color: #555;">Oct 15, 2026</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">Module 2 Project</td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-review">In Review</span></td>
-                                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; color:#888;">--</td>
-                                    </tr>
+                                <tbody id="gradebook-body">
+                                    <!-- Populated by JS -->
                                 </tbody>
                             </table>
                         </div>
@@ -440,195 +346,442 @@
 
                 <!-- TAB 3: ASSIGNMENTS -->
                 <div id="tab-assignments" style="display: none;">
-                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">A detail of uncompleted assignments arranged in action cards.</p>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-                        
-                        <div class="glass-panel" style="margin-bottom: 0;">
-                            <h3 style="margin-top: 0; color: var(--moe-amber);">Module 3 Reading</h3>
-                            <p style="font-size: 0.9em; color: #555; height: 60px;">Read chapters 4-6 of the core constitutional text and prepare discussion notes.</p>
-                            <button class="sangaia-btn" style="width: 100%; margin:0;"><span>Start Assignment</span></button>
-                        </div>
-                        
-                        <div class="glass-panel" style="margin-bottom: 0;">
-                            <h3 style="margin-top: 0; color: var(--moe-amber);">Midterm Exam</h3>
-                            <p style="font-size: 0.9em; color: #555; height: 60px;">Comprehensive exam covering modules 1-3. Requires secure provincial browser.</p>
-                            <button class="sangaia-btn" style="width: 100%; margin:0;"><span>Start Exam</span></button>
-                        </div>
-                        
-                        <div class="glass-panel" style="margin-bottom: 0;">
-                            <h3 style="margin-top: 0; color: var(--moe-amber);">Civic Essay</h3>
-                            <p style="font-size: 0.9em; color: #555; height: 60px;">Write a 1,500 word essay on the Aeretocratic Principles.</p>
-                            <button class="sangaia-btn" style="width: 100%; margin:0;"><span>View Rubric</span></button>
-                        </div>
-
+                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">A detail of course modules and required assessments.</p>
+                    <div id="assignments-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                        <!-- Populated by JS -->
                     </div>
                 </div>
-
             </div>
         </div>
 
     </div>
 
-    <footer>
+    <!-- ========================================== -->
+    <!-- STATE 3: UNIFIED VIEWER (LESSONS & QUIZZES)-->
+    <!-- ========================================== -->
+    <div id="viewer-layout">
+        <!-- Top Control Bar -->
+        <div class="viewer-topbar">
+            <div style="font-size: 0.9em; opacity: 0.8;" id="viewer-course-title">Constitution 101</div>
+            
+            <!-- Pagination Controls (Only visible during lessons) -->
+            <div class="viewer-nav-controls" id="viewer-pagination" style="display: none;">
+                <button class="viewer-nav-btn" onclick="changeLessonPage(-1)" id="btn-prev">&larr;</button>
+                <span id="page-indicator">1 of X</span>
+                <button class="viewer-nav-btn" onclick="changeLessonPage(1)" id="btn-next">&rarr;</button>
+            </div>
+
+            <!-- Quiz Controls (Only visible during quizzes) -->
+            <div class="viewer-nav-controls" id="viewer-quiz-title" style="display: none;">
+                Assessment Mode
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 0.85em; color: #aaa;" id="viewer-user">user@email</span>
+                <a href="javascript:void(0)" onclick="closeViewer()" class="viewer-close-btn" title="Exit to Course">&#10006;</a>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="viewer-content-area">
+            <div class="viewer-paper" id="viewer-paper-content">
+                <!-- Content injected here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <footer id="main-footer">
         &copy; 2026 Ministry of Education - United Provinces of Sangaia
     </footer>
 </div>
 
-<!-- SUPABASE INTEGRATION LOGIC -->
+<!-- SUPABASE LOGIC & LMS ENGINE -->
 <script>
-    // =========================================================================
-    // IMPORTANT: ENTER YOUR SUPABASE CREDENTIALS HERE AS WELL
-    // =========================================================================
-    const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; // e.g., 'https://xyz.supabase.co'
+    const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; 
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZGRpdHN1b21panN4eWxkcGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDU0NjYsImV4cCI6MjA5NDA4MTQ2Nn0.2ZNOqYpVGD11ttSW8qwOSlFQzwP10ys7TUreh7YiCxU';
 
     let supabaseClient;
-    const keysValid = (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_URL.startsWith('http'));
+    let currentUser = null;
+    let currentCourse = "";
+    
+    // --- MOCK CURRICULUM DATABASE ---
+    const curriculum = {
+        "lesson_01": {
+            title: "Module 1: The Foundations",
+            type: "lesson",
+            pages: [
+                `
+                <h1 class="lesson-header">Crafting Clarity in Government</h1>
+                <div class="lesson-objectives">
+                    <h3>&#10003; Objectives</h3>
+                    <ul>
+                        <li>Compare and contrast standard protocols with provincial law.</li>
+                        <li>Assess how bureaucratic style contributes to clarity.</li>
+                        <li>Demonstrate a practical understanding of core Sangaian style rules.</li>
+                    </ul>
+                </div>
+                <div class="lesson-text">
+                    <p>Greetings, Citizen. Those who study the framework of our great Republic have a tough task. They must be compelling thinkers who capture attention, creating a sense of duty in every article. Not only that, they must be careful to abide by the specific writing rules laid out by the Ministry.</p>
+                    <p>Think of it like a dress code for how legal articles should look. It covers various aspects of writing, including grammar, punctuation, and capitalization.</p>
+                </div>
+                `,
+                `
+                <h1 class="lesson-header">The Industry Standard</h1>
+                <div class="lesson-text">
+                    <p>The standard press style was formed in 1846 when several news outlets collaborated to share resources. As they continued to share information, it became clear that a standard formatting for articles was needed.</p>
+                    <p>Why was this necessary? Clarity and consistency for readers. Think about it like this: when you read a provincial edict, it's basically telling the same story, but there are often many differences in how the language is structured.</p>
+                </div>
+                `
+            ],
+            nextStep: "assessment_01" // Links to the quiz when finished
+        },
+        "assessment_01": {
+            title: "Module 1 Quiz: Protocols",
+            type: "assessment",
+            questions: [
+                {
+                    q: "Which voice should always be used in government writing?",
+                    options: ["Subjective", "Passive", "Active", "Personal"],
+                    answer: 2 // Index of "Active"
+                },
+                {
+                    q: "Why is a standard formatting style necessary?",
+                    options: ["To confuse the public", "Clarity and consistency", "To save printer ink", "It is not necessary"],
+                    answer: 1
+                }
+            ]
+        }
+    };
 
-    if (keysValid && window.supabase) {
+    // Global Viewer State
+    let viewerState = {
+        activeId: null,
+        currentPage: 0,
+        quizAnswers: {}
+    };
+
+    // Initialization
+    if (window.supabase) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        // Setup Auth Listener to ensure they are logged in to view the dashboard
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
-                // User is authenticated
-                const email = session.user.email;
-                document.getElementById('student-email').textContent = email;
-                document.getElementById('sidebar-username').textContent = email; // Update sidebar too
-                fetchUserCourses(session.user.id);
+                currentUser = session.user;
+                document.getElementById('student-email').textContent = currentUser.email;
+                document.getElementById('sidebar-username').textContent = currentUser.email;
+                document.getElementById('viewer-user').textContent = currentUser.email;
+                fetchUserCourses(currentUser.id);
             } else {
-                // Not logged in -> Kick them back to the portal
                 window.location.href = 'portal.html';
             }
         });
-    } else {
-        document.getElementById('loader').innerHTML = "<span style='color:red;'>Database Disconnected: Please insert your Supabase URL and Key into dashboard.html</span>";
     }
 
-    // Sign out from inside the dashboard
     async function signOutFromCourse() {
         if (!supabaseClient) return;
-        const { error } = await supabaseClient.auth.signOut();
-        if (error) alert("Error signing out.");
+        await supabaseClient.auth.signOut();
     }
 
-    // This function fetches specifically from a table named 'courses' matching this user's ID
     async function fetchUserCourses(userId) {
-        if (!supabaseClient) return;
-
-        const { data: courses, error } = await supabaseClient
-            .from('courses')
-            .select('*')
-            .eq('user_id', userId);
-
+        const { data: courses, error } = await supabaseClient.from('courses').select('*').eq('user_id', userId);
         document.getElementById('loader').style.display = 'none';
 
-        if (error) {
-            alert("Error loading courses: " + error.message);
-            return;
-        }
+        if (error) { console.error(error); return; }
 
         const container = document.getElementById('course-container');
-        const noCoursesMsg = document.getElementById('no-courses-msg');
-        
         if (courses && courses.length > 0) {
             container.style.display = 'grid';
-            noCoursesMsg.style.display = 'none';
-            container.innerHTML = ''; // Clears old duplicates before loading
+            container.innerHTML = ''; 
             
-            // Generate HTML for each course the user is enrolled in
             courses.forEach(course => {
                 const card = document.createElement('div');
                 card.className = 'division-card course-card';
-                
-                // Sanitize variables for JS onclick execution
                 const safeName = (course.course_name || 'Course').replace(/'/g, "\\'");
-                const safeInst = (course.instructor || 'TBD').replace(/'/g, "\\'");
-                const safeGrade = (course.grade || 'N/A').replace(/'/g, "\\'");
-
                 card.innerHTML = `
                     <h3>${course.course_name}</h3>
-                    <div class="course-grade">${course.grade || 'N/A'}</div>
                     <p><strong>Instructor:</strong> ${course.instructor || 'TBD'}</p>
-                    <p style="font-size: 0.85em; color: #888;">ID: ${course.id}</p>
-                    <button class="sangaia-btn" style="margin-top:10px; width:100%;" 
-                            onclick="openCourse('${safeName}', '${safeInst}', '${safeGrade}')">
+                    <button class="sangaia-btn" style="margin-top:10px; width:100%;" onclick="openCourse('${safeName}', '${course.instructor}')">
                         <span>Go to course</span>
                     </button>
                 `;
                 container.appendChild(card);
             });
         } else {
-            // Show this if the database query succeeds but returns 0 rows
-            container.style.display = 'none';
-            noCoursesMsg.style.display = 'block';
+            document.getElementById('no-courses-msg').style.display = 'block';
         }
     }
 
     // ==========================================
-    // COURSE VIEW NAVIGATION LOGIC
+    // APP MODE: COURSE VIEW
     // ==========================================
-
-    // Opens the detailed course view and hides the dashboard selection
-    function openCourse(courseName, instructor, grade) {
-        // Update DOM elements with specific course data
+    function openCourse(courseName, instructor) {
+        currentCourse = courseName;
         document.getElementById('course-name-display').textContent = courseName;
         document.getElementById('course-instructor-display').textContent = instructor;
-        document.getElementById('course-grade-display').textContent = grade;
         
-        // Add App Mode class to transform the layout to full screen
         document.body.classList.add('app-mode');
-        
-        // Hide list view, show detailed course view
         document.getElementById('dashboard-selection-view').style.display = 'none';
         document.getElementById('course-detail-view').style.display = 'flex';
         
-        // Default to showing the homepage tab
+        loadGradesAndAssignments();
         showTab('homepage');
     }
 
-    // Returns back to the list view
     function closeCourse() {
-        // Remove App Mode class to restore global header/nav and layout limits
         document.body.classList.remove('app-mode');
-        
         document.getElementById('course-detail-view').style.display = 'none';
         document.getElementById('dashboard-selection-view').style.display = 'block';
     }
 
-    // Handles the left sidebar navigation
     function showTab(tabId) {
-        // Hide all tabs
         document.getElementById('tab-homepage').style.display = 'none';
         document.getElementById('tab-gradebook').style.display = 'none';
         document.getElementById('tab-assignments').style.display = 'none';
         
-        // Remove active styling from all sidebar links
         document.getElementById('nav-homepage').classList.remove('active');
         document.getElementById('nav-gradebook').classList.remove('active');
         document.getElementById('nav-assignments').classList.remove('active');
         
-        // Grab current course name memory
-        const courseName = document.getElementById('course-name-display').textContent;
         const viewTitle = document.getElementById('view-title');
         
-        // Show selected tab and update Title headers to match mockups
         if (tabId === 'homepage') {
-            document.getElementById('tab-homepage').style.display = 'grid'; // Homepage uses CSS grid
+            document.getElementById('tab-homepage').style.display = 'grid';
             document.getElementById('nav-homepage').classList.add('active');
-            viewTitle.innerHTML = `Welcome back to <span id="course-name-display" style="color: var(--moe-amber);">${courseName}</span>.`;
+            viewTitle.innerHTML = `Welcome back to <span style="color: var(--moe-amber);">${currentCourse}</span>.`;
         } 
         else if (tabId === 'gradebook') {
             document.getElementById('tab-gradebook').style.display = 'block';
             document.getElementById('nav-gradebook').classList.add('active');
-            viewTitle.innerHTML = `Gradebook <span id="course-name-display" style="display:none;">${courseName}</span>`; // Hidden to keep memory
+            viewTitle.innerHTML = `Gradebook`;
         } 
         else if (tabId === 'assignments') {
             document.getElementById('tab-assignments').style.display = 'block';
             document.getElementById('nav-assignments').classList.add('active');
-            viewTitle.innerHTML = `Assignments <span id="course-name-display" style="display:none;">${courseName}</span>`; // Hidden to keep memory
+            viewTitle.innerHTML = `Assignments`;
         }
+    }
+
+    // ==========================================
+    // GRADES & ASSIGNMENTS ENGINE
+    // ==========================================
+    async function loadGradesAndAssignments() {
+        // 1. Render Assignments Tab (from mock curriculum)
+        const assignBox = document.getElementById('assignments-container');
+        assignBox.innerHTML = `
+            <div class="glass-panel" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: var(--moe-amber);">Module 1 Reading</h3>
+                <p style="font-size: 0.9em; color: #555; height: 60px;">Read the introductory text regarding stylistic protocols.</p>
+                <button class="sangaia-btn" style="width: 100%; margin:0;" onclick="openViewer('lesson_01')"><span>Start Lesson</span></button>
+            </div>
+            <div class="glass-panel" style="margin-bottom: 0;">
+                <h3 style="margin-top: 0; color: var(--moe-amber);">Module 1 Quiz</h3>
+                <p style="font-size: 0.9em; color: #555; height: 60px;">Comprehensive quiz covering module 1 protocols.</p>
+                <button class="sangaia-btn" style="width: 100%; margin:0;" onclick="openViewer('assessment_01')"><span>Take Quiz</span></button>
+            </div>
+        `;
+
+        // 2. Fetch Grades from Supabase
+        // *NOTE TO DEV: Create a table called 'assignment_grades' with cols: user_id, course_name, assignment_title, score*
+        let grades = [];
+        const { data, error } = await supabaseClient.from('assignment_grades')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .eq('course_name', currentCourse);
+
+        if (!error && data) { grades = data; }
+
+        // 3. Populate Gradebook & Homepage Stats
+        const gbBody = document.getElementById('gradebook-body');
+        const recentSubs = document.getElementById('recent-subs-list');
+        
+        gbBody.innerHTML = '';
+        recentSubs.innerHTML = '';
+
+        if (grades.length === 0) {
+            gbBody.innerHTML = '<tr><td colspan="3" style="padding: 12px; text-align: center; color: #888;">No grades recorded yet.</td></tr>';
+            recentSubs.innerHTML = '<li>No recent submissions.</li>';
+            document.getElementById('course-grade-display').textContent = '--';
+            document.getElementById('progress-bar-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0%';
+        } else {
+            let totalScore = 0;
+            grades.forEach(g => {
+                totalScore += g.score;
+                // Add to Gradebook
+                gbBody.innerHTML += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${g.assignment_title}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-passed">Graded</span></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">${g.score}%</td>
+                    </tr>
+                `;
+                // Add to recent
+                recentSubs.innerHTML += `<li style="margin-bottom: 5px;">${g.assignment_title} <span style="color:#2e7d32; font-weight:bold;">(${g.score}%)</span></li>`;
+            });
+
+            // Calc average & progress
+            const avg = Math.round(totalScore / grades.length);
+            document.getElementById('course-grade-display').textContent = avg + "%";
+            
+            // Dummy logic: assume 1 quiz = 50% complete for demo
+            let prog = grades.length * 50; 
+            if (prog > 100) prog = 100;
+            document.getElementById('progress-bar-fill').style.width = prog + '%';
+            document.getElementById('progress-text').textContent = prog + '%';
+        }
+    }
+
+    // ==========================================
+    // UNIFIED VIEWER (LESSONS & QUIZZES)
+    // ==========================================
+    function openViewer(contentId) {
+        const item = curriculum[contentId];
+        if (!item) return alert("Content not found.");
+
+        viewerState.activeId = contentId;
+        document.getElementById('viewer-course-title').textContent = currentCourse;
+        
+        // Show Viewer, Hide App
+        document.getElementById('course-detail-view').style.display = 'none';
+        document.getElementById('viewer-layout').style.display = 'flex';
+
+        if (item.type === 'lesson') {
+            viewerState.currentPage = 0;
+            document.getElementById('viewer-pagination').style.display = 'flex';
+            document.getElementById('viewer-quiz-title').style.display = 'none';
+            renderLessonPage();
+        } else if (item.type === 'assessment') {
+            viewerState.quizAnswers = {};
+            document.getElementById('viewer-pagination').style.display = 'none';
+            document.getElementById('viewer-quiz-title').style.display = 'flex';
+            renderAssessment();
+        }
+    }
+
+    function closeViewer() {
+        document.getElementById('viewer-layout').style.display = 'none';
+        document.getElementById('course-detail-view').style.display = 'flex';
+        loadGradesAndAssignments(); // Refresh grades in case they just took a test!
+    }
+
+    // --- LESSON RENDERER ---
+    function renderLessonPage() {
+        const item = curriculum[viewerState.activeId];
+        const paper = document.getElementById('viewer-paper-content');
+        
+        // Update pagination UI
+        document.getElementById('page-indicator').textContent = `${viewerState.currentPage + 1} of ${item.pages.length}`;
+        document.getElementById('btn-prev').disabled = (viewerState.currentPage === 0);
+        
+        let html = item.pages[viewerState.currentPage];
+
+        // If on the last page, add the "Next/Take Quiz" button
+        if (viewerState.currentPage === item.pages.length - 1) {
+            document.getElementById('btn-next').disabled = true;
+            html += `
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: right;">
+                    <button class="sangaia-btn active" onclick="openViewer('${item.nextStep}')"><span>Begin Assessment &rarr;</span></button>
+                </div>
+            `;
+        } else {
+            document.getElementById('btn-next').disabled = false;
+        }
+
+        paper.innerHTML = html;
+    }
+
+    function changeLessonPage(dir) {
+        const item = curriculum[viewerState.activeId];
+        const newPage = viewerState.currentPage + dir;
+        if (newPage >= 0 && newPage < item.pages.length) {
+            viewerState.currentPage = newPage;
+            renderLessonPage();
+        }
+    }
+
+    // --- ASSESSMENT RENDERER ---
+    function renderAssessment() {
+        const item = curriculum[viewerState.activeId];
+        const paper = document.getElementById('viewer-paper-content');
+        
+        let html = `
+            <div class="quiz-header">
+                <h1 class="quiz-title">${item.title}</h1>
+                <p style="color: #555; margin:0;">Please select the correct answer for each question. Check the box at the bottom to submit for grading.</p>
+            </div>
+        `;
+
+        item.questions.forEach((q, qIndex) => {
+            html += `
+                <div class="question-box">
+                    <div class="question-top">Question ${qIndex + 1}</div>
+                    <div class="question-body">
+                        <p style="font-size: 1.1em; margin-top:0;">${q.q}</p>
+                        ${q.options.map((opt, oIndex) => `
+                            <label class="radio-option">
+                                <input type="radio" name="q${qIndex}" value="${oIndex}" onchange="recordAnswer(${qIndex}, ${oIndex})">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+            <div class="quiz-submit-box">
+                <label style="font-weight: bold; cursor: pointer; display: block; margin-bottom: 15px;">
+                    <input type="checkbox" id="submit-confirm-box"> 
+                    Check this box to submit your assessment for grading.
+                </label>
+                <button class="sangaia-btn active" onclick="gradeAssessment()" style="width: 200px;"><span>Submit Assessment</span></button>
+            </div>
+        `;
+
+        paper.innerHTML = html;
+    }
+
+    function recordAnswer(qIndex, oIndex) {
+        viewerState.quizAnswers[qIndex] = oIndex;
+    }
+
+    async function gradeAssessment() {
+        const confirmBox = document.getElementById('submit-confirm-box');
+        if (!confirmBox.checked) {
+            alert("Please check the confirmation box to submit.");
+            return;
+        }
+
+        const item = curriculum[viewerState.activeId];
+        let correctCount = 0;
+
+        // Grade it
+        item.questions.forEach((q, index) => {
+            if (viewerState.quizAnswers[index] === q.answer) {
+                correctCount++;
+            }
+        });
+
+        const scorePercent = Math.round((correctCount / item.questions.length) * 100);
+        
+        // Save to Supabase
+        // *NOTE: You must create the 'assignment_grades' table in Supabase for this to save!*
+        if (supabaseClient) {
+            const { error } = await supabaseClient.from('assignment_grades').insert([{
+                user_id: currentUser.id,
+                course_name: currentCourse,
+                assignment_title: item.title,
+                score: scorePercent
+            }]);
+            
+            if (error) {
+                console.warn("Could not save to DB (did you create the assignment_grades table?). Local score:", scorePercent);
+                alert("Score: " + scorePercent + "% \n\n(Note: Score was not saved to cloud. Ensure the 'assignment_grades' table exists in Supabase!)");
+            } else {
+                alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
+            }
+        }
+
+        closeViewer();
     }
 </script>
 
