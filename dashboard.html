@@ -4,31 +4,851 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Dashboard - Ministry of Education</title>
+    <!-- SUPABASE CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* [Existing Styles Kept, Plus New Lesson Styles Below] */
-        :root { --moe-amber: #d35400; --moe-light: #f39c12; }
-        
-        /* New Lesson Components */
-        .lesson-container { max-width: 800px; margin: auto; }
-        .lesson-header { color: var(--moe-amber); border-bottom: 2px solid var(--moe-amber); padding-bottom: 10px; margin-bottom: 30px; }
-        
-        .viewfinder { background: #fffdf5; border: 2px solid #f39c12; border-radius: 8px; padding: 20px; margin-bottom: 30px; position: relative; }
-        .section-icon { width: 40px; height: 40px; vertical-align: middle; margin-right: 15px; }
-        
-        .take-note { background: #fdfdfd; border-left: 5px solid #bdc3c7; padding: 15px 20px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .file-section { background: #f0f0f0; border-radius: 6px; padding: 15px; margin-top: 40px; display: flex; align-items: center; }
-        
-        .lesson-image { max-width: 40%; border-radius: 8px; margin: 0 20px 20px 0; }
-        .lesson-image.right { float: right; margin: 0 0 20px 20px; }
+        /* --- AMBER / YELLOW THEME STYLES --- */
+        :root {
+            --glass-amber: rgba(255, 245, 230, 0.85);
+            --moe-amber: #d35400; 
+            --moe-light-amber: #f39c12;
+            --text-dark: #2c3e50;
+            --stripes: repeating-linear-gradient(0deg, #f2f2f2, #f2f2f2 1px, #ffffff 1px, #ffffff 2px);
+        /* Add these styles inside your <style> tag in dashboard.html */
 
-        /* Interactive Activity Styling */
-        .activity-box { border: 2px dashed #d35400; padding: 20px; border-radius: 8px; background: #fff8f0; }
-        .activity-item { padding: 10px; margin: 5px; background: white; border: 1px solid #ddd; cursor: pointer; display: inline-block; border-radius: 4px; }
+.lesson-container { max-width: 800px; margin: 20px auto; line-height: 1.6; }
+.lesson-header { color: #d35400; border-bottom: 2px solid #d35400; padding-bottom: 10px; margin-bottom: 30px; }
+
+.viewfinder { background: #fffdf5; border: 2px solid #f39c12; border-radius: 8px; padding: 20px; margin-bottom: 30px; }
+.section-icon { width: 30px; height: 30px; vertical-align: middle; margin-right: 12px; }
+
+.take-note { background: #fdfdfd; border-left: 5px solid #bdc3c7; padding: 15px 20px; margin: 20px 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.file-section { background: #f0f0f0; border-radius: 6px; padding: 15px; margin-top: 40px; display: flex; align-items: center; }
+
+.lesson-image { max-width: 40%; border-radius: 8px; margin: 0 20px 20px 0; }
+.lesson-image.right { float: right; margin: 0 0 20px 20px; }
+
+.activity-box { border: 2px dashed #d35400; padding: 20px; border-radius: 8px; background: #fff8f0; margin-top: 20px; }
+.activity-item { padding: 10px 15px; margin: 5px; background: white; border: 1px solid #ddd; cursor: pointer; display: inline-block; border-radius: 4px; transition: 0.2s; }
+.activity-item:hover { border-color: #d35400; background: #fffdf5; }
+        }
+
+        body {
+            background: var(--stripes);
+            min-height: 100dvh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-direction: column;
+            margin: 0;
+            font-family: 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+        }
+
+        .main-container { width: 100%; margin: 0; background: transparent; padding: 0; flex-grow: 1; display: flex; flex-direction: column; }
+
+        header {
+            background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%);
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 3px solid #a04000;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        header::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+            pointer-events: none;
+        }
+
+        h1 { margin: 0; font-size: 2.5em; letter-spacing: -1px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; margin-top: 5px; font-weight: normal; }
+
+        #globalheader {
+            width: 100%; height: 38px;
+            background: linear-gradient(to bottom, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
+            border-top: 1px solid #222; border-bottom: 1px solid #000;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 11px; position: relative; z-index: 99;
+        }
+
+        #globalnav { margin: 0; padding: 0; list-style: none; display: flex; justify-content: center; height: 100%; }
+        #globalnav li { position: relative; height: 100%; display: flex; align-items: center; }
+        #globalnav li::after { content: ""; position: absolute; right: 0; width: 1px; height: 100%; background: linear-gradient(#333, #111); box-shadow: 1px 0 0 rgba(255,255,255,0.08); }
+        #globalnav li:first-child::before { content: ""; position: absolute; left: 0; width: 1px; height: 100%; background: linear-gradient(#333, #111); box-shadow: 1px 0 0 rgba(255,255,255,0.08); }
+        #globalnav li:last-child::after { display: block; }
+
+        #globalnav li a {
+            display: block; color: #e8e8e8; text-decoration: none; text-shadow: 0 -1px 0 rgba(0,0,0,0.8);
+            font-weight: bold; padding: 0 24px; line-height: 38px;
+            transition: text-shadow 0.2s ease;
+        }
+        
+        #globalnav li a:hover { 
+            color: #fff; background: linear-gradient(rgba(255,255,255,0.05), rgba(255,255,255,0));
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8); 
+        }
+        
+        #globalnav li a.active { color: #fff; background: rgba(0,0,0,0.2); box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
+
+        .sangaia-btn {
+            font-size: 0.9rem; font-family: sans-serif; height: 2.5em; padding: 0 1em; width: auto; min-width: 10em;
+            border-radius: 1000px; position: relative; overflow: hidden; cursor: pointer; border: none;
+            text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+            margin: 5px; transition: all 0.1s ease-out; box-sizing: border-box;
+            background: linear-gradient(rgba(160, 160, 160, 0.625), rgba(255, 255, 255, 0.625));
+            box-shadow: 0 0.375em 0.5em rgba(0, 0, 0, 0.2), inset 0 0.25em 0.25em rgba(0, 0, 0, 0.4), inset 0 0.375em 0.5em 0.25em #BBBBBB;
+            color: #333; font-weight: bold;
+        }
+        .sangaia-btn::before { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3)); width: calc(100% - 0.875em); border-radius: 2em 2em 0.5em 0.5em; top: 5%; filter: blur(1px); z-index: 2; pointer-events: none;}
+        .sangaia-btn::after { content: ''; position: absolute; left: 50%; transform: translateX(-50%); height: 33%; background: linear-gradient(rgba(255, 255, 255, 0.2), rgb(255, 255, 255, 0.5)); width: calc(100% - 1.25em); border-radius: 0.75em; bottom: 10%; filter: blur(3px); pointer-events: none;}
+        .sangaia-btn span { position: relative; z-index: 3; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
+        .sangaia-btn:hover { filter: brightness(1.05); }
+
+        .sangaia-btn.active, .sangaia-btn:active {
+            background: linear-gradient(rgba(211, 84, 0, 0.8), rgba(243, 156, 18, 0.8), rgba(211, 84, 0, 0.8));
+            box-shadow: 0 0.375em 0.5em rgba(0, 0, 0, 0.3), inset 0 0.25em 0.5em rgba(100, 40, 0, 0.8), 0 0 0.5em rgba(243, 156, 18, 0.5);
+            color: white; transform: translateY(1px); border: 1px solid #a04000;
+        }
+        .sangaia-btn.active span, .sangaia-btn:active span { text-shadow: 0 1px 2px rgba(100, 40, 0, 0.6); }
+
+        .content-wrapper { background: transparent; padding: 30px; width: 100%; max-width: 1400px; margin: 0 auto; box-sizing: border-box; flex-grow: 1; }
+        
+        .glass-panel {
+            background: linear-gradient(to bottom, #fcfcfc 0%, #f1f1f1 100%);
+            border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05), inset 0 1px 0 #fff;
+        }
+        .glass-panel h2 { margin-top: 0; color: var(--moe-amber); border-bottom: 1px solid #eee; padding-bottom: 10px; font-size: 1.4em; }
+
+        .content-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        @media (min-width: 768px) { .content-grid { grid-template-columns: 2fr 1fr; } }
+
+        /* SELECTION GRID */
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; margin-top: 20px; justify-content: center; }
+        .course-card { background: rgba(255,255,255,0.9); border: 1px solid #ccc; border-radius: 6px; padding: 15px; position: relative; }
+        .course-card h3 { margin-top: 0; color: #d35400; font-size: 1.2em; border-bottom: 1px solid #f0f0f0; padding-bottom: 5px; }
+        .course-grade { position: absolute; top: 15px; right: 15px; font-weight: bold; background: #e8f5e9; color: #2e7d32; padding: 4px 8px; border-radius: 4px; border: 1px solid #a5d6a7;}
+
+        /* APP MODE STYLES */
+        body.app-mode #main-site-header,
+        body.app-mode #globalheader,
+        body.app-mode footer { display: none !important; }
+        body.app-mode .content-wrapper { padding: 0 !important; max-width: 100% !important; margin: 0 !important; display: flex; flex-direction: column; }
+        
+        #course-detail-view { display: flex; width: 100%; flex-grow: 1; min-height: 100vh; }
+
+        /* VERTICAL SIDEBAR */
+        .app-sidebar {
+            width: 220px; flex-shrink: 0; background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
+            border-right: 1px solid #000; display: flex; flex-direction: column; box-shadow: 2px 0 8px rgba(0,0,0,0.3); z-index: 10;
+        }
+        .sidebar-account-info { padding: 25px 20px; border-bottom: 1px solid #111; text-align: left; background: rgba(0,0,0,0.25); box-shadow: inset 0 -1px 0 rgba(255,255,255,0.05); }
+        .sidebar-account-info h3 { margin: 0; color: #e8e8e8; font-size: 1.1em; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); }
+        .sidebar-account-info p { margin: 5px 0 0 0; font-size: 0.85em; color: #aaa; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); word-break: break-all; }
+        .sidebar-nav-metal { list-style: none; padding: 0; margin: 0; }
+        .sidebar-nav-metal li { border-bottom: 1px solid #111; border-top: 1px solid rgba(255,255,255,0.08); }
+        .sidebar-nav-metal li a { display: block; padding: 16px 20px; text-decoration: none; color: #e8e8e8; font-weight: bold; text-shadow: 0 -1px 0 rgba(0,0,0,0.8); transition: background 0.2s, color 0.2s, text-shadow 0.2s; text-align: left; }
+        .sidebar-nav-metal li a:hover { color: #fff; background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(255,255,255,0)); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 -1px 0 rgba(0,0,0,0.8); }
+        .sidebar-nav-metal li a.active { color: #fff; background: rgba(0,0,0,0.3); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+
+        .app-main-content { flex-grow: 1; padding: 40px; overflow-y: auto; max-height: 100vh; box-sizing: border-box; background: #fdfdfd; }
+        .course-homepage-grid { display: grid; gap: 20px; }
+        @media (min-width: 768px) { .course-homepage-grid { grid-template-columns: 1fr 2fr; grid-template-rows: auto auto; } }
+
+        /* STATUS BADGES */
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85em; display: inline-block; }
+        .status-passed { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        .status-failed { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .status-review { background: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+        #loader { text-align: center; padding: 50px; color: #888; font-style: italic; }
+
+        /* =======================================
+           SYLLABUS (ACCORDION) STYLES
+           ======================================= */
+        .syllabus-segment { margin-bottom: 20px; background: rgba(255,255,255,0.6); border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .syllabus-segment > summary { background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%); color: white; padding: 15px 20px; font-size: 1.2em; font-weight: bold; cursor: pointer; text-shadow: 0 1px 2px rgba(0,0,0,0.3); list-style: none; display: flex; align-items: center; }
+        .syllabus-segment > summary::-webkit-details-marker { display: none; }
+        .syllabus-segment > summary::before { content: '▶'; margin-right: 10px; font-size: 0.8em; transition: transform 0.2s; }
+        .syllabus-segment[open] > summary::before { transform: rotate(90deg); }
+        .segment-content { padding: 20px; }
+        
+        .syllabus-module { margin-bottom: 15px; border: 1px solid #eee; border-radius: 6px; overflow: hidden; background: white; }
+        .syllabus-module > summary { background: #fdfdfd; color: #d35400; padding: 12px 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid #eee; list-style: none; display: flex; align-items: center;}
+        .syllabus-module > summary::-webkit-details-marker { display: none; }
+        .syllabus-module > summary::before { content: '▶'; margin-right: 10px; font-size: 0.8em; transition: transform 0.2s; color: #888; }
+        .syllabus-module[open] > summary::before { transform: rotate(90deg); }
+        .syllabus-module > summary:hover { background: #fff8f0; }
+        
+        .assignment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; padding: 15px; background: #fafafa; }
+        .assignment-card { background: white; border: 1px solid #ddd; border-radius: 4px; padding: 15px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .assignment-card h4 { margin: 0 0 10px 0; color: #333; font-size: 1em; }
+
+        /* =======================================
+           UNIFIED VIEWER STYLES
+           ======================================= */
+        #viewer-layout { display: none; width: 100%; height: 100vh; flex-direction: column; background: #f4f6f8; z-index: 100; position: fixed; top: 0; left: 0; }
+        .viewer-topbar { height: 45px; background: linear-gradient(to bottom, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; border-bottom: 2px solid #a04000; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .viewer-nav-controls { display: flex; align-items: center; gap: 15px; font-weight: bold; }
+        .viewer-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 4px; padding: 4px 12px; cursor: pointer; transition: all 0.2s; }
+        .viewer-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
+        .viewer-nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .viewer-close-btn { color: #ccc; cursor: pointer; font-size: 1.2em; text-decoration: none; }
+        .viewer-close-btn:hover { color: white; }
+
+        .viewer-content-area { flex-grow: 1; overflow-y: auto; padding: 30px; display: flex; justify-content: center; }
+        .viewer-paper { background: white; width: 100%; max-width: 900px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; border: 1px solid #ddd; padding: 40px; min-height: 600px; position: relative; }
+        
+        .quiz-header { border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 20px; }
+        .quiz-title { font-size: 1.8em; color: var(--moe-amber); margin: 0 0 10px 0; }
+        .question-box { border: 1px solid #ccc; border-radius: 6px; margin-bottom: 25px; overflow: hidden; }
+        .question-top { background: #f5f5f5; padding: 12px 20px; border-bottom: 1px solid #ccc; font-weight: bold; color: #555; }
+        .question-body { padding: 20px; }
+        .radio-option { display: block; margin-bottom: 15px; padding: 10px; border: 1px solid #eee; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        .radio-option:hover { background: #f9f9f9; }
+        .radio-option input { margin-right: 10px; }
+        .quiz-submit-box { background: rgba(243, 156, 18, 0.1); padding: 20px; border: 1px solid var(--moe-amber); border-radius: 6px; text-align: center; margin-top: 30px; }
     </style>
 </head>
 <body>
-    <!-- (Rest of your HTML structure remains the same as previously provided) -->
-    <!-- [Ensure your script handles the rendering of these new CSS classes] -->
+
+<div class="main-container">
+    <header id="main-site-header">
+        <h1>Ministry of Education</h1>
+        <div class="subtitle">Provincial Course Dashboard</div>
+    </header>
+
+    <nav id="globalheader">
+        <ul id="globalnav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="portal.html" class="active">Student Portal</a></li>
+            <li><a href="finance.html">Financial Secretary</a></li>
+            <li><a href="divisions.html">Divisions</a></li>
+        </ul>
+    </nav>
+
+    <div class="content-wrapper">
+        <!-- STATE 1: DASHBOARD SELECTION -->
+        <div id="dashboard-selection-view">
+            <div class="content-grid">
+                <div class="main-col">
+                    <div class="glass-panel" id="header-panel" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h2>Student Dashboard</h2>
+                            <p style="margin:0;">Enrolled Student: <strong id="student-email">Loading...</strong></p>
+                        </div>
+                        <button class="sangaia-btn" onclick="signOutFromCourse()"><span>Sign Out</span></button>
+                    </div>
+
+                    <div class="glass-panel">
+                        <h2>Current Course Enrollments</h2>
+                        <div id="loader">Securely fetching your specific courses from the database...</div>
+                        <div class="course-grid" id="course-container" style="display: none;"></div>
+                        <p id="no-courses-msg" style="display: none; text-align: center; padding: 40px; color: #777;">
+                            You are not currently enrolled in any provincial courses. Use the catalog below to add a course.
+                        </p>
+                    </div>
+
+                    <div class="glass-panel">
+                        <h2>Course Catalog</h2>
+                        <div class="course-grid">
+                            <div class="division-card course-card">
+                                <h3>Constitution 101</h3>
+                                <p><strong>Instructor:</strong> Prof. Thorne</p>
+                                <button class="sangaia-btn" style="margin-top:10px; width:100%;"><span>Request Enrollment</span></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-col">
+                    <div class="glass-panel" style="background: linear-gradient(to bottom, #fcf3cf 0%, #f8c471 100%);">
+                        <h2 style="color: #9c640c;">Ministry Contact</h2>
+                        <p style="color: #7e5109; font-size: 0.9em;">For enrollment issues or transcript requests, please contact the Ministry.</p>
+                        <ul style="color: #7e5109; padding-left: 20px;">
+                            <li><strong>Email:</strong> upos.edu@gmail.com</li>
+                            <li><strong>Hours:</strong> 08:00 - 16:00</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 2: COURSE DETAIL VIEW -->
+        <div id="course-detail-view" style="display: none;">
+            <div class="app-sidebar">
+                <div class="sidebar-account-info">
+                    <h3>Account Info</h3>
+                    <p id="sidebar-username">student@sangaia.gov</p>
+                </div>
+                <ul class="sidebar-nav-metal">
+                    <li><a href="javascript:void(0)" onclick="showTab('homepage')" id="nav-homepage" class="active">Course Homepage</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('gradebook')" id="nav-gradebook">Gradebook</a></li>
+                    <li><a href="javascript:void(0)" onclick="showTab('assignments')" id="nav-assignments">Assignments</a></li>
+                </ul>
+                <ul class="sidebar-nav-metal" style="margin-top: auto; border-top: 1px solid #111;">
+                    <li><a href="javascript:void(0)" onclick="closeCourse()">&larr; Back to Dashboard</a></li>
+                    <li><a href="javascript:void(0)" onclick="signOutFromCourse()">Sign Out</a></li>
+                </ul>
+            </div>
+
+            <div class="app-main-content">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #ccc; padding-bottom: 10px;">
+                    <h2 id="view-title" style="margin: 0; font-size: 2.2em; color: #2c3e50;">Welcome back.</h2>
+                    <div class="glass-panel" style="margin: 0; padding: 10px 20px; box-shadow: none; background: rgba(255,255,255,0.6);">
+                        <span style="color: #555; font-size: 0.9em;">Instructor:</span> <strong id="course-instructor-display" style="color: var(--text-dark);">TBD</strong>
+                    </div>
+                </div>
+
+                <!-- TAB 1: COURSE HOMEPAGE -->
+                <div id="tab-homepage" class="course-homepage-grid">
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Recent Submissions</h3>
+                        <ul id="recent-subs-list" style="padding-left: 20px; color: #555; margin-bottom: 0;">
+                            <li>No recent submissions.</li>
+                        </ul>
+                    </div>
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Score Report</h3>
+                        <p style="font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                            Assessment Average: <strong id="course-grade-display" style="color: #2e7d32; font-size: 1.2em;">--</strong>
+                        </p>
+                        <p style="color: #555;">Complete your assessments in the Assignments tab to calculate your standing.</p>
+                    </div>
+                    <div class="glass-panel">
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Curriculum Progress</h3>
+                        <div style="background: #eee; border-radius: 100px; height: 20px; width: 100%; overflow: hidden; margin-top: 15px; border: 1px solid #ccc;">
+                            <div id="progress-bar-fill" style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 0%; height: 100%; transition: width 0.4s ease;"></div>
+                        </div>
+                        <p id="progress-text" style="text-align: right; margin-top: 5px; font-weight: bold; color: #d35400;">0%</p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: GRADEBOOK -->
+                <div id="tab-gradebook" style="display: none;">
+                    <div class="glass-panel">
+                        <p style="margin:0 0 15px 0; color: #555; border-bottom: 1px solid #eee; padding-bottom: 15px;">A detail of every score received on assignments and tests.</p>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                                <thead>
+                                    <tr style="background: rgba(243, 156, 18, 0.1);">
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: left; color: #d35400;">Assignment Title</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Status</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Attempts</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gradebook-body">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: ASSIGNMENTS (SYLLABUS VIEW) -->
+                <div id="tab-assignments" style="display: none;">
+                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">Expand the segments below to view your uncompleted assignments.</p>
+                    <div id="assignments-container">
+                        <!-- Populated dynamically by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE 3: UNIFIED VIEWER -->
+    <div id="viewer-layout">
+        <div class="viewer-topbar">
+            <div style="font-size: 0.9em; opacity: 0.8;" id="viewer-course-title">Course Name</div>
+            
+            <div class="viewer-nav-controls" id="viewer-pagination" style="display: none;">
+                <button class="viewer-nav-btn" onclick="changeLessonPage(-1)" id="btn-prev">&larr;</button>
+                <span id="page-indicator">1 of X</span>
+                <button class="viewer-nav-btn" onclick="changeLessonPage(1)" id="btn-next">&rarr;</button>
+            </div>
+
+            <div class="viewer-nav-controls" id="viewer-quiz-title" style="display: none;">Assessment Mode</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 0.85em; color: #aaa;" id="viewer-user">user@email</span>
+                <a href="javascript:void(0)" onclick="closeViewer()" class="viewer-close-btn" title="Exit to Course">&#10006;</a>
+            </div>
+        </div>
+        <div class="viewer-content-area">
+            <div class="viewer-paper" id="viewer-paper-content">
+                <!-- Content injected here by JS -->
+            </div>
+        </div>
+    </div>
+
+    <footer id="main-footer">
+        &copy; 2026 Ministry of Education - United Provinces of Sangaia
+    </footer>
+</div>
+
+<!-- SUPABASE LOGIC & LMS ENGINE -->
+<script>
+    const SUPABASE_URL = 'https://ugdditsuomijsxyldpkl.supabase.co'; 
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnZGRpdHN1b21panN4eWxkcGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDU0NjYsImV4cCI6MjA5NDA4MTQ2Nn0.2ZNOqYpVGD11ttSW8qwOSlFQzwP10ys7TUreh7YiCxU';
+
+    let supabaseClient;
+    let currentUser = null;
+    let currentCourse = "";
+    let currentGrades = []; 
+    let curriculum = null; // Will hold the parsed curriculum.json
+    
+    let viewerState = { activeId: null, currentPage: 0, quizAnswers: {} };
+
+    // Initialization
+    if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Fetch Curriculum on Load
+        fetch('curriculum.json')
+            .then(response => {
+                if(!response.ok) throw new Error("Could not load curriculum.json");
+                return response.json();
+            })
+            .then(data => { curriculum = data; })
+            .catch(error => {
+                console.error(error);
+                alert("Error: Missing 'curriculum.json' file. The course cannot load assignments.");
+            });
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('student-email').textContent = currentUser.email;
+                document.getElementById('sidebar-username').textContent = currentUser.email;
+                document.getElementById('viewer-user').textContent = currentUser.email;
+                fetchUserCourses(currentUser.id);
+            } else {
+                window.location.href = 'portal.html';
+            }
+        });
+    }
+
+    async function signOutFromCourse() {
+        if (!supabaseClient) return;
+        await supabaseClient.auth.signOut();
+    }
+
+    async function fetchUserCourses(userId) {
+        const { data: courses, error } = await supabaseClient.from('courses').select('*').eq('user_id', userId);
+        document.getElementById('loader').style.display = 'none';
+
+        if (error) { alert("Error loading courses: " + error.message); return; }
+
+        const container = document.getElementById('course-container');
+        if (courses && courses.length > 0) {
+            container.style.display = 'grid';
+            container.innerHTML = ''; 
+            courses.forEach(course => {
+                const card = document.createElement('div');
+                card.className = 'division-card course-card';
+                const safeName = (course.course_name || 'Course').replace(/'/g, "\\'");
+                const safeInst = (course.instructor || 'TBD').replace(/'/g, "\\'");
+                card.innerHTML = `
+                    <h3>${course.course_name}</h3>
+                    <p><strong>Instructor:</strong> ${course.instructor || 'TBD'}</p>
+                    <button class="sangaia-btn" style="margin-top:10px; width:100%;" onclick="openCourse('${safeName}', '${safeInst}')">
+                        <span>Go to course</span>
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        } else {
+            document.getElementById('no-courses-msg').style.display = 'block';
+        }
+    }
+
+    // ==========================================
+    // APP MODE: COURSE VIEW
+    // ==========================================
+    function openCourse(courseName, instructor) {
+        if(!curriculum) {
+            alert("Curriculum database is still loading or missing!");
+            return;
+        }
+        currentCourse = courseName;
+        document.getElementById('course-instructor-display').textContent = instructor;
+        
+        document.body.classList.add('app-mode');
+        document.getElementById('dashboard-selection-view').style.display = 'none';
+        document.getElementById('course-detail-view').style.display = 'flex';
+        
+        loadGradesAndAssignments();
+        showTab('homepage');
+    }
+
+    function closeCourse() {
+        document.body.classList.remove('app-mode');
+        document.getElementById('course-detail-view').style.display = 'none';
+        document.getElementById('dashboard-selection-view').style.display = 'block';
+    }
+
+    function showTab(tabId) {
+        document.getElementById('tab-homepage').style.display = 'none';
+        document.getElementById('tab-gradebook').style.display = 'none';
+        document.getElementById('tab-assignments').style.display = 'none';
+        
+        document.getElementById('nav-homepage').classList.remove('active');
+        document.getElementById('nav-gradebook').classList.remove('active');
+        document.getElementById('nav-assignments').classList.remove('active');
+        
+        const viewTitle = document.getElementById('view-title');
+        
+        if (tabId === 'homepage') {
+            document.getElementById('tab-homepage').style.display = 'grid';
+            document.getElementById('nav-homepage').classList.add('active');
+            viewTitle.innerHTML = `Welcome back to <span style="color: var(--moe-amber);">${currentCourse}</span>.`;
+        } 
+        else if (tabId === 'gradebook') {
+            document.getElementById('tab-gradebook').style.display = 'block';
+            document.getElementById('nav-gradebook').classList.add('active');
+            viewTitle.innerHTML = `Gradebook`;
+        } 
+        else if (tabId === 'assignments') {
+            document.getElementById('tab-assignments').style.display = 'block';
+            document.getElementById('nav-assignments').classList.add('active');
+            viewTitle.innerHTML = `Assignments`;
+        }
+    }
+
+    // Helper to find a specific assignment object from the JSON tree
+    function getCurriculumItem(id) {
+        for(let s of curriculum.segments) {
+            for(let m of s.modules) {
+                for(let a of m.assignments) {
+                    if (a.id === id) return a;
+                }
+            }
+        }
+        return null;
+    }
+
+    // ==========================================
+    // GRADES & ASSIGNMENTS ENGINE
+    // ==========================================
+    async function loadGradesAndAssignments() {
+        const { data, error } = await supabaseClient.from('assignment_grades')
+            .select('*').eq('user_id', currentUser.id).eq('course_name', currentCourse);
+
+        if (error) {
+            console.error("Fetch Error:", error);
+            alert("Error fetching grades: " + error.message);
+        }
+
+        currentGrades = (!error && data) ? data : [];
+
+        // 1. Build Accordion Syllabus
+        const assignBox = document.getElementById('assignments-container');
+        assignBox.innerHTML = '';
+        let totalItems = 0;
+        let completedCount = 0;
+        let anySegmentHasPending = false;
+
+        curriculum.segments.forEach(segment => {
+            let segmentHtml = `<details class="syllabus-segment" open><summary>${segment.title}</summary><div class="segment-content">`;
+            let segHasPending = false;
+
+            segment.modules.forEach(mod => {
+                let moduleHtml = `<details class="syllabus-module" open><summary>${mod.title}</summary><div class="assignment-grid">`;
+                let modHasPending = false;
+
+                mod.assignments.forEach(item => {
+                    totalItems++;
+                    const isCompleted = currentGrades.some(g => g.assignment_title === item.title);
+                    if (isCompleted) {
+                        completedCount++;
+                    } else {
+                        // Only render UNCOMPLETED assignments to make them disappear when done!
+                        segHasPending = true;
+                        modHasPending = true;
+                        anySegmentHasPending = true;
+                        const btnText = item.type === 'lesson' ? 'Start Lesson' : 'Take Quiz';
+                        moduleHtml += `
+                            <div class="assignment-card">
+                                <h4>${item.title}</h4>
+                                <button class="sangaia-btn active" style="width: 100%; margin:0; font-size:0.8em;" onclick="openViewer('${item.id}')"><span>${btnText}</span></button>
+                            </div>
+                        `;
+                    }
+                });
+                moduleHtml += `</div></details>`;
+                if (modHasPending) segmentHtml += moduleHtml; // Hide empty modules
+            });
+            segmentHtml += `</div></details>`;
+            if (segHasPending) assignBox.innerHTML += segmentHtml; // Hide empty segments
+        });
+
+        if (!anySegmentHasPending) {
+            assignBox.innerHTML = '<div style="text-align: center; padding: 40px; background: white; border-radius: 8px; color: #27ae60; font-weight: bold; border: 1px solid #ddd;">&#10003; You have completed all assignments for this course!</div>';
+        }
+
+        // 2. Populate Gradebook
+        const gbBody = document.getElementById('gradebook-body');
+        const recentSubs = document.getElementById('recent-subs-list');
+        gbBody.innerHTML = ''; recentSubs.innerHTML = '';
+
+        if (currentGrades.length === 0) {
+            gbBody.innerHTML = '<tr><td colspan="4" style="padding: 12px; text-align: center; color: #888;">No grades recorded yet.</td></tr>';
+            recentSubs.innerHTML = '<li>No recent submissions.</li>';
+            document.getElementById('course-grade-display').textContent = '--';
+            document.getElementById('progress-bar-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = '0%';
+        } else {
+            let totalQuizScore = 0;
+            let quizCount = 0;
+
+            currentGrades.forEach(g => {
+                // Determine if it's a lesson or assessment based on title (reverse lookup)
+                let isAssessment = false;
+                let currKey = null;
+                for(let s of curriculum.segments) {
+                    for(let m of s.modules) {
+                        for(let a of m.assignments) {
+                            if (a.title === g.assignment_title) {
+                                isAssessment = (a.type === 'assessment');
+                                currKey = a.id;
+                            }
+                        }
+                    }
+                }
+
+                const attempts = g.attempts || 1;
+                if (isAssessment) { totalQuizScore += g.score; quizCount++; }
+
+                let retakeBtn = '';
+                let attemptsText = 'N/A';
+                
+                if (isAssessment) {
+                    attemptsText = `${attempts} / 3`;
+                    if (attempts < 3) {
+                        retakeBtn = `<br><button class="sangaia-btn active" style="height: 2.2em; font-size: 0.75em; padding: 0 10px; width: 100%; margin-top: 8px;" onclick="openViewer('${currKey}')"><span>Retake Quiz</span></button>`;
+                    } else {
+                        retakeBtn = `<br><span style="font-size: 0.8em; color: #888; display: block; margin-top: 5px;">Max Attempts Reached</span>`;
+                    }
+                }
+
+                const statusColor = (g.score >= 60 || !isAssessment) ? 'status-passed' : 'status-failed';
+                const statusText = isAssessment ? (g.score >= 60 ? 'Passed' : 'Failed') : 'Complete';
+                const displayScore = isAssessment ? `${g.score}%` : '&#10003;';
+
+                gbBody.innerHTML += `
+                    <tr>
+                        <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${g.assignment_title}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge ${statusColor}">${statusText}</span></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #555; font-size: 0.9em;">${attemptsText}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; width: 120px;">${displayScore}${retakeBtn}</td>
+                    </tr>
+                `;
+                recentSubs.innerHTML += `<li style="margin-bottom: 5px;">${g.assignment_title} <span style="color:#2e7d32; font-weight:bold;">(${displayScore})</span></li>`;
+            });
+
+            const avg = quizCount > 0 ? Math.round(totalQuizScore / quizCount) : '--';
+            document.getElementById('course-grade-display').textContent = avg === '--' ? '--' : avg + "%";
+            
+            const prog = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
+            document.getElementById('progress-bar-fill').style.width = prog + '%';
+            document.getElementById('progress-text').textContent = prog + '%';
+        }
+    }
+
+    // ==========================================
+    // DATABASE SAVING HELPER
+    // ==========================================
+    async function saveGrade(title, score, isAssessment) {
+        if (!supabaseClient) return false;
+
+        const existing = currentGrades.find(g => g.assignment_title === title);
+        const attempts = existing ? (existing.attempts || 1) + 1 : 1;
+
+        if (isAssessment && attempts > 3) {
+            alert("Maximum attempts reached.");
+            return false;
+        }
+
+        if (existing) {
+            const { error } = await supabaseClient.from('assignment_grades')
+                .update({ score: score, attempts: attempts })
+                .eq('user_id', currentUser.id)
+                .eq('course_name', currentCourse)
+                .eq('assignment_title', title);
+            
+            if (error) { alert("Database Update Error: " + error.message); return false; }
+        } else {
+            const { error } = await supabaseClient.from('assignment_grades')
+                .insert([{ user_id: currentUser.id, course_name: currentCourse, assignment_title: title, score: score, attempts: attempts }]);
+            
+            if (error) { alert("Database Insert Error: " + error.message); return false; }
+        }
+        return true;
+    }
+
+    // ==========================================
+    // UNIFIED VIEWER (EXTERNAL FETCHING)
+    // ==========================================
+    function openViewer(contentId) {
+        const item = getCurriculumItem(contentId);
+        if (!item) return alert("Content not found.");
+
+        viewerState.activeId = contentId;
+        document.getElementById('viewer-course-title').textContent = currentCourse;
+        
+        document.getElementById('course-detail-view').style.display = 'none';
+        document.getElementById('viewer-layout').style.display = 'flex';
+
+        if (item.type === 'lesson') {
+            viewerState.currentPage = 0;
+            document.getElementById('viewer-pagination').style.display = 'flex';
+            document.getElementById('viewer-quiz-title').style.display = 'none';
+            renderLessonPage();
+        } else if (item.type === 'assessment') {
+            viewerState.quizAnswers = {};
+            document.getElementById('viewer-pagination').style.display = 'none';
+            document.getElementById('viewer-quiz-title').style.display = 'flex';
+            renderAssessment();
+        }
+    }
+
+    async function closeViewer() {
+        document.getElementById('viewer-layout').style.display = 'none';
+        document.getElementById('course-detail-view').style.display = 'flex';
+        await loadGradesAndAssignments(); 
+    }
+
+    // --- EXTERNAL HTML LESSON FETCHER ---
+    async function renderLessonPage() {
+        const item = getCurriculumItem(viewerState.activeId);
+        const paper = document.getElementById('viewer-paper-content');
+        
+        document.getElementById('page-indicator').textContent = `${viewerState.currentPage + 1} of ${item.pages.length}`;
+        document.getElementById('btn-prev').disabled = (viewerState.currentPage === 0);
+        
+        // Show loading state while fetching HTML file from GitHub/Server
+        paper.innerHTML = '<div style="text-align:center; padding: 50px; color:#888;">Securely fetching content...</div>';
+        
+        try {
+            const fileUrl = item.pages[viewerState.currentPage];
+            const response = await fetch(fileUrl);
+            if (!response.ok) throw new Error(`Could not load ${fileUrl}`);
+            
+            let html = await response.text();
+
+            if (viewerState.currentPage === item.pages.length - 1) {
+                document.getElementById('btn-next').disabled = true;
+                html += `
+                    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+                        <span style="color: #777; font-size: 0.9em;">Finished reading?</span>
+                        <button class="sangaia-btn active" onclick="markLessonComplete('${viewerState.activeId}')">
+                            <span>Mark as Complete & Continue &#10003;</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('btn-next').disabled = false;
+            }
+            paper.innerHTML = html;
+            
+        } catch (error) {
+            console.error(error);
+            paper.innerHTML = `<div style="text-align:center; padding: 50px; color:red;">
+                <h3>File Not Found</h3>
+                <p>Ensure you have uploaded the file <strong>${item.pages[viewerState.currentPage]}</strong> to your GitHub repository.</p>
+            </div>`;
+        }
+    }
+
+    function changeLessonPage(dir) {
+        const item = getCurriculumItem(viewerState.activeId);
+        const newPage = viewerState.currentPage + dir;
+        if (newPage >= 0 && newPage < item.pages.length) {
+            viewerState.currentPage = newPage;
+            renderLessonPage();
+        }
+    }
+
+    async function markLessonComplete(contentId) {
+        const item = getCurriculumItem(contentId);
+        const saved = await saveGrade(item.title, 100, false); 
+        
+        if (saved) {
+            if (item.nextStep) { openViewer(item.nextStep); } 
+            else { closeViewer(); }
+        }
+    }
+
+    // --- ASSESSMENT RENDERER ---
+    function renderAssessment() {
+        const item = getCurriculumItem(viewerState.activeId);
+        const paper = document.getElementById('viewer-paper-content');
+        
+        let html = `
+            <div class="quiz-header">
+                <h1 class="quiz-title">${item.title}</h1>
+                <p style="color: #555; margin:0;">Please select the correct answer for each question. Check the box at the bottom to submit for grading.</p>
+            </div>
+        `;
+
+        item.questions.forEach((q, qIndex) => {
+            html += `
+                <div class="question-box">
+                    <div class="question-top">Question ${qIndex + 1}</div>
+                    <div class="question-body">
+                        <p style="font-size: 1.1em; margin-top:0;">${q.q}</p>
+                        ${q.options.map((opt, oIndex) => `
+                            <label class="radio-option">
+                                <input type="radio" name="q${qIndex}" value="${oIndex}" onchange="recordAnswer(${qIndex}, ${oIndex})">
+                                ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `
+            <div class="quiz-submit-box">
+                <label style="font-weight: bold; cursor: pointer; display: block; margin-bottom: 15px;">
+                    <input type="checkbox" id="submit-confirm-box"> 
+                    Check this box to confirm you are ready to submit your assessment.
+                </label>
+                <button class="sangaia-btn active" onclick="gradeAssessment()" style="width: 200px;"><span>Submit Assessment</span></button>
+            </div>
+        `;
+        paper.innerHTML = html;
+    }
+
+    function recordAnswer(qIndex, oIndex) {
+        viewerState.quizAnswers[qIndex] = oIndex;
+    }
+
+    async function gradeAssessment() {
+        const confirmBox = document.getElementById('submit-confirm-box');
+        if (!confirmBox.checked) return alert("Please check the confirmation box to submit.");
+
+        const item = getCurriculumItem(viewerState.activeId);
+        let correctCount = 0;
+
+        item.questions.forEach((q, index) => {
+            if (viewerState.quizAnswers[index] === q.answer) correctCount++;
+        });
+
+        const scorePercent = Math.round((correctCount / item.questions.length) * 100);
+        const saved = await saveGrade(item.title, scorePercent, true);
+        
+        if (saved) {
+            alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
+            closeViewer();
+        }
+    }
+</script>
+
 </body>
 </html>
