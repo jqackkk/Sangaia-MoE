@@ -305,7 +305,7 @@
                     <div class="glass-panel">
                         <h3 style="margin-top:0; color: var(--moe-amber);">Score Report</h3>
                         <p style="font-size: 1.1em; border-bottom: 1px solid #eee; padding-bottom: 15px;">
-                            Current Average: <strong id="course-grade-display" style="color: #2e7d32; font-size: 1.2em;">--</strong>
+                            Assessment Average: <strong id="course-grade-display" style="color: #2e7d32; font-size: 1.2em;">--</strong>
                         </p>
                         <p style="color: #555;">Complete your assessments in the Assignments tab to calculate your standing.</p>
                     </div>
@@ -315,9 +315,9 @@
                         <p style="font-size: 0.9em; color: #c0392b; font-weight: bold;">Self-paced curriculum.</p>
                     </div>
                     <div class="glass-panel">
-                        <h3 style="margin-top:0; color: var(--moe-amber);">Percentage Complete</h3>
+                        <h3 style="margin-top:0; color: var(--moe-amber);">Curriculum Progress</h3>
                         <div style="background: #eee; border-radius: 100px; height: 20px; width: 100%; overflow: hidden; margin-top: 15px; border: 1px solid #ccc;">
-                            <div id="progress-bar-fill" style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 0%; height: 100%;"></div>
+                            <div id="progress-bar-fill" style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 0%; height: 100%; transition: width 0.4s ease;"></div>
                         </div>
                         <p id="progress-text" style="text-align: right; margin-top: 5px; font-weight: bold; color: #d35400;">0%</p>
                     </div>
@@ -333,6 +333,7 @@
                                     <tr style="background: rgba(243, 156, 18, 0.1);">
                                         <th style="padding: 12px; border: 1px solid #ddd; text-align: left; color: #d35400;">Assignment Title</th>
                                         <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Status</th>
+                                        <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Attempts</th>
                                         <th style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #d35400;">Score</th>
                                     </tr>
                                 </thead>
@@ -346,9 +347,9 @@
 
                 <!-- TAB 3: ASSIGNMENTS -->
                 <div id="tab-assignments" style="display: none;">
-                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">A detail of course modules and required assessments.</p>
+                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">A detail of your uncompleted course modules and required assessments.</p>
                     <div id="assignments-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-                        <!-- Populated by JS -->
+                        <!-- Populated dynamically by JS (hides completed items) -->
                     </div>
                 </div>
             </div>
@@ -403,11 +404,13 @@
     let supabaseClient;
     let currentUser = null;
     let currentCourse = "";
+    let currentGrades = []; // We now store grades globally so we can check attempt counts
     
     // --- MOCK CURRICULUM DATABASE ---
     const curriculum = {
         "lesson_01": {
-            title: "Module 1: The Foundations",
+            title: "Module 1 Reading",
+            description: "Read the introductory text regarding stylistic protocols.",
             type: "lesson",
             pages: [
                 `
@@ -436,7 +439,8 @@
             nextStep: "assessment_01" // Links to the quiz when finished
         },
         "assessment_01": {
-            title: "Module 1 Quiz: Protocols",
+            title: "Module 1 Quiz",
+            description: "Comprehensive quiz covering module 1 protocols. 3 attempts max.",
             type: "assessment",
             questions: [
                 {
@@ -564,70 +568,156 @@
     // GRADES & ASSIGNMENTS ENGINE
     // ==========================================
     async function loadGradesAndAssignments() {
-        // 1. Render Assignments Tab (from mock curriculum)
-        const assignBox = document.getElementById('assignments-container');
-        assignBox.innerHTML = `
-            <div class="glass-panel" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; color: var(--moe-amber);">Module 1 Reading</h3>
-                <p style="font-size: 0.9em; color: #555; height: 60px;">Read the introductory text regarding stylistic protocols.</p>
-                <button class="sangaia-btn" style="width: 100%; margin:0;" onclick="openViewer('lesson_01')"><span>Start Lesson</span></button>
-            </div>
-            <div class="glass-panel" style="margin-bottom: 0;">
-                <h3 style="margin-top: 0; color: var(--moe-amber);">Module 1 Quiz</h3>
-                <p style="font-size: 0.9em; color: #555; height: 60px;">Comprehensive quiz covering module 1 protocols.</p>
-                <button class="sangaia-btn" style="width: 100%; margin:0;" onclick="openViewer('assessment_01')"><span>Take Quiz</span></button>
-            </div>
-        `;
-
-        // 2. Fetch Grades from Supabase
-        // *NOTE TO DEV: Create a table called 'assignment_grades' with cols: user_id, course_name, assignment_title, score*
-        let grades = [];
+        // Fetch Grades from Supabase
         const { data, error } = await supabaseClient.from('assignment_grades')
             .select('*')
             .eq('user_id', currentUser.id)
             .eq('course_name', currentCourse);
 
-        if (!error && data) { grades = data; }
+        currentGrades = (!error && data) ? data : [];
 
-        // 3. Populate Gradebook & Homepage Stats
+        // 1. Dynamically Render Assignments Tab (Hiding completed ones)
+        const assignBox = document.getElementById('assignments-container');
+        assignBox.innerHTML = '';
+        let pendingCount = 0;
+
+        for (const [key, item] of Object.entries(curriculum)) {
+            // Check if the student has completed this item
+            const isCompleted = currentGrades.some(g => g.assignment_title === item.title);
+            
+            // Only render it in the to-do list if it's NOT completed
+            if (!isCompleted) {
+                pendingCount++;
+                const btnText = item.type === 'lesson' ? 'Start Lesson' : 'Take Quiz';
+                assignBox.innerHTML += `
+                    <div class="glass-panel" style="margin-bottom: 0;">
+                        <h3 style="margin-top: 0; color: var(--moe-amber);">${item.title}</h3>
+                        <p style="font-size: 0.9em; color: #555; height: 60px;">${item.description}</p>
+                        <button class="sangaia-btn" style="width: 100%; margin:0;" onclick="openViewer('${key}')"><span>${btnText}</span></button>
+                    </div>
+                `;
+            }
+        }
+
+        if (pendingCount === 0) {
+            assignBox.innerHTML = '<p style="color: #777; grid-column: 1 / -1; text-align: center; padding: 20px;">You have completed all available assignments for this course!</p>';
+        }
+
+        // 2. Populate Gradebook & Homepage Stats
         const gbBody = document.getElementById('gradebook-body');
         const recentSubs = document.getElementById('recent-subs-list');
         
         gbBody.innerHTML = '';
         recentSubs.innerHTML = '';
 
-        if (grades.length === 0) {
-            gbBody.innerHTML = '<tr><td colspan="3" style="padding: 12px; text-align: center; color: #888;">No grades recorded yet.</td></tr>';
+        if (currentGrades.length === 0) {
+            gbBody.innerHTML = '<tr><td colspan="4" style="padding: 12px; text-align: center; color: #888;">No grades recorded yet.</td></tr>';
             recentSubs.innerHTML = '<li>No recent submissions.</li>';
             document.getElementById('course-grade-display').textContent = '--';
             document.getElementById('progress-bar-fill').style.width = '0%';
             document.getElementById('progress-text').textContent = '0%';
         } else {
-            let totalScore = 0;
-            grades.forEach(g => {
-                totalScore += g.score;
-                // Add to Gradebook
+            let totalQuizScore = 0;
+            let quizCount = 0;
+
+            currentGrades.forEach(g => {
+                // Find curriculum item to check if it's a lesson or assessment
+                const currKey = Object.keys(curriculum).find(k => curriculum[k].title === g.assignment_title);
+                const isAssessment = currKey && curriculum[currKey].type === 'assessment';
+                const attempts = g.attempts || 1;
+                
+                if (isAssessment) {
+                    totalQuizScore += g.score;
+                    quizCount++;
+                }
+
+                let retakeBtn = '';
+                let attemptsText = 'N/A';
+                
+                // Add Retake button for assessments with < 3 attempts
+                if (isAssessment) {
+                    attemptsText = `${attempts} / 3`;
+                    if (attempts < 3) {
+                        retakeBtn = `<br><button class="sangaia-btn active" style="height: 2.2em; font-size: 0.75em; padding: 0 10px; width: 100%; margin-top: 8px;" onclick="openViewer('${currKey}')"><span>Retake Quiz</span></button>`;
+                    } else {
+                        retakeBtn = `<br><span style="font-size: 0.8em; color: #888; display: block; margin-top: 5px;">Max Attempts Reached</span>`;
+                    }
+                }
+
+                const statusColor = (g.score >= 60 || !isAssessment) ? 'status-passed' : 'status-failed';
+                const statusText = isAssessment ? (g.score >= 60 ? 'Passed' : 'Failed') : 'Complete';
+                const displayScore = isAssessment ? `${g.score}%` : '&#10003;';
+
+                // Add to Gradebook Table
                 gbBody.innerHTML += `
                     <tr>
                         <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${g.assignment_title}</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge status-passed">Graded</span></td>
-                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold;">${g.score}%</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">
+                            <span class="status-badge ${statusColor}">${statusText}</span>
+                        </td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #555; font-size: 0.9em;">
+                            ${attemptsText}
+                        </td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; width: 120px;">
+                            ${displayScore}
+                            ${retakeBtn}
+                        </td>
                     </tr>
                 `;
-                // Add to recent
-                recentSubs.innerHTML += `<li style="margin-bottom: 5px;">${g.assignment_title} <span style="color:#2e7d32; font-weight:bold;">(${g.score}%)</span></li>`;
+                
+                // Add to recent submissions on homepage
+                recentSubs.innerHTML += `<li style="margin-bottom: 5px;">${g.assignment_title} <span style="color:#2e7d32; font-weight:bold;">(${displayScore})</span></li>`;
             });
 
-            // Calc average & progress
-            const avg = Math.round(totalScore / grades.length);
-            document.getElementById('course-grade-display').textContent = avg + "%";
+            // Calc average based on QUIZZES only
+            const avg = quizCount > 0 ? Math.round(totalQuizScore / quizCount) : '--';
+            document.getElementById('course-grade-display').textContent = avg === '--' ? '--' : avg + "%";
             
-            // Dummy logic: assume 1 quiz = 50% complete for demo
-            let prog = grades.length * 50; 
-            if (prog > 100) prog = 100;
+            // Calc Progress Percentage
+            const totalItems = Object.keys(curriculum).length;
+            const completedItems = currentGrades.length;
+            const prog = Math.round((completedItems / totalItems) * 100);
+            
             document.getElementById('progress-bar-fill').style.width = prog + '%';
             document.getElementById('progress-text').textContent = prog + '%';
         }
+    }
+
+    // ==========================================
+    // DATABASE SAVING HELPER
+    // ==========================================
+    async function saveGrade(title, score, isAssessment) {
+        if (!supabaseClient) return false;
+
+        const existing = currentGrades.find(g => g.assignment_title === title);
+        const attempts = existing ? (existing.attempts || 1) + 1 : 1;
+
+        if (isAssessment && attempts > 3) {
+            alert("Maximum attempts reached.");
+            return false;
+        }
+
+        if (existing) {
+            // Update existing grade
+            const { error } = await supabaseClient.from('assignment_grades')
+                .update({ score: score, attempts: attempts })
+                .eq('user_id', currentUser.id)
+                .eq('course_name', currentCourse)
+                .eq('assignment_title', title);
+            if (error) console.error(error);
+        } else {
+            // Insert new grade
+            const { error } = await supabaseClient.from('assignment_grades')
+                .insert([{
+                    user_id: currentUser.id,
+                    course_name: currentCourse,
+                    assignment_title: title,
+                    score: score,
+                    attempts: attempts
+                }]);
+            if (error) console.error(error);
+        }
+        return true;
     }
 
     // ==========================================
@@ -640,7 +730,6 @@
         viewerState.activeId = contentId;
         document.getElementById('viewer-course-title').textContent = currentCourse;
         
-        // Show Viewer, Hide App
         document.getElementById('course-detail-view').style.display = 'none';
         document.getElementById('viewer-layout').style.display = 'flex';
 
@@ -660,7 +749,7 @@
     function closeViewer() {
         document.getElementById('viewer-layout').style.display = 'none';
         document.getElementById('course-detail-view').style.display = 'flex';
-        loadGradesAndAssignments(); // Refresh grades in case they just took a test!
+        loadGradesAndAssignments(); // Refresh grades in case they just saved a test or lesson!
     }
 
     // --- LESSON RENDERER ---
@@ -668,18 +757,20 @@
         const item = curriculum[viewerState.activeId];
         const paper = document.getElementById('viewer-paper-content');
         
-        // Update pagination UI
         document.getElementById('page-indicator').textContent = `${viewerState.currentPage + 1} of ${item.pages.length}`;
         document.getElementById('btn-prev').disabled = (viewerState.currentPage === 0);
         
         let html = item.pages[viewerState.currentPage];
 
-        // If on the last page, add the "Next/Take Quiz" button
+        // If on the last page, add the "Mark Complete" button
         if (viewerState.currentPage === item.pages.length - 1) {
             document.getElementById('btn-next').disabled = true;
             html += `
-                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: right;">
-                    <button class="sangaia-btn active" onclick="openViewer('${item.nextStep}')"><span>Begin Assessment &rarr;</span></button>
+                <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+                    <span style="color: #777; font-size: 0.9em;">Finished reading?</span>
+                    <button class="sangaia-btn active" onclick="markLessonComplete('${viewerState.activeId}')">
+                        <span>Mark as Complete & Continue &#10003;</span>
+                    </button>
                 </div>
             `;
         } else {
@@ -695,6 +786,17 @@
         if (newPage >= 0 && newPage < item.pages.length) {
             viewerState.currentPage = newPage;
             renderLessonPage();
+        }
+    }
+
+    async function markLessonComplete(contentId) {
+        const item = curriculum[contentId];
+        await saveGrade(item.title, 100, false); // Lessons get a dummy score of 100
+        
+        if (item.nextStep) {
+            openViewer(item.nextStep); // Launch the next quiz automatically!
+        } else {
+            closeViewer();
         }
     }
 
@@ -731,7 +833,7 @@
             <div class="quiz-submit-box">
                 <label style="font-weight: bold; cursor: pointer; display: block; margin-bottom: 15px;">
                     <input type="checkbox" id="submit-confirm-box"> 
-                    Check this box to submit your assessment for grading.
+                    Check this box to confirm you are ready to submit your assessment.
                 </label>
                 <button class="sangaia-btn active" onclick="gradeAssessment()" style="width: 200px;"><span>Submit Assessment</span></button>
             </div>
@@ -754,33 +856,17 @@
         const item = curriculum[viewerState.activeId];
         let correctCount = 0;
 
-        // Grade it
         item.questions.forEach((q, index) => {
-            if (viewerState.quizAnswers[index] === q.answer) {
-                correctCount++;
-            }
+            if (viewerState.quizAnswers[index] === q.answer) correctCount++;
         });
 
         const scorePercent = Math.round((correctCount / item.questions.length) * 100);
         
-        // Save to Supabase
-        // *NOTE: You must create the 'assignment_grades' table in Supabase for this to save!*
-        if (supabaseClient) {
-            const { error } = await supabaseClient.from('assignment_grades').insert([{
-                user_id: currentUser.id,
-                course_name: currentCourse,
-                assignment_title: item.title,
-                score: scorePercent
-            }]);
-            
-            if (error) {
-                console.warn("Could not save to DB (did you create the assignment_grades table?). Local score:", scorePercent);
-                alert("Score: " + scorePercent + "% \n\n(Note: Score was not saved to cloud. Ensure the 'assignment_grades' table exists in Supabase!)");
-            } else {
-                alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
-            }
+        const saved = await saveGrade(item.title, scorePercent, true);
+        if(saved) {
+            alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
         }
-
+        
         closeViewer();
     }
 </script>
