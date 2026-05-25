@@ -100,15 +100,7 @@
         }
         .sangaia-btn.active span, .sangaia-btn:active span { text-shadow: 0 1px 2px rgba(100, 40, 0, 0.6); }
 
-        .content-wrapper { 
-            background: transparent; 
-            padding: 30px; 
-            width: 100%; 
-            max-width: 1400px; 
-            margin: 0 auto;
-            box-sizing: border-box; 
-            flex-grow: 1;
-        }
+        .content-wrapper { background: transparent; padding: 30px; width: 100%; max-width: 1400px; margin: 0 auto; box-sizing: border-box; flex-grow: 1; }
         
         .glass-panel {
             background: linear-gradient(to bottom, #fcfcfc 0%, #f1f1f1 100%);
@@ -134,7 +126,7 @@
         
         #course-detail-view { display: flex; width: 100%; flex-grow: 1; min-height: 100vh; }
 
-        /* VERTICAL FULL-HEIGHT METAL SIDEBAR */
+        /* VERTICAL SIDEBAR */
         .app-sidebar {
             width: 220px; flex-shrink: 0; background: linear-gradient(to right, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
             border-right: 1px solid #000; display: flex; flex-direction: column; box-shadow: 2px 0 8px rgba(0,0,0,0.3); z-index: 10;
@@ -160,13 +152,31 @@
         #loader { text-align: center; padding: 50px; color: #888; font-style: italic; }
 
         /* =======================================
-           UNIFIED VIEWER STYLES (LESSONS & QUIZZES)
+           SYLLABUS (ACCORDION) STYLES
+           ======================================= */
+        .syllabus-segment { margin-bottom: 20px; background: rgba(255,255,255,0.6); border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .syllabus-segment > summary { background: linear-gradient(to bottom, #f39c12 0%, #d35400 100%); color: white; padding: 15px 20px; font-size: 1.2em; font-weight: bold; cursor: pointer; text-shadow: 0 1px 2px rgba(0,0,0,0.3); list-style: none; display: flex; align-items: center; }
+        .syllabus-segment > summary::-webkit-details-marker { display: none; }
+        .syllabus-segment > summary::before { content: '▶'; margin-right: 10px; font-size: 0.8em; transition: transform 0.2s; }
+        .syllabus-segment[open] > summary::before { transform: rotate(90deg); }
+        .segment-content { padding: 20px; }
+        
+        .syllabus-module { margin-bottom: 15px; border: 1px solid #eee; border-radius: 6px; overflow: hidden; background: white; }
+        .syllabus-module > summary { background: #fdfdfd; color: #d35400; padding: 12px 15px; font-weight: bold; cursor: pointer; border-bottom: 1px solid #eee; list-style: none; display: flex; align-items: center;}
+        .syllabus-module > summary::-webkit-details-marker { display: none; }
+        .syllabus-module > summary::before { content: '▶'; margin-right: 10px; font-size: 0.8em; transition: transform 0.2s; color: #888; }
+        .syllabus-module[open] > summary::before { transform: rotate(90deg); }
+        .syllabus-module > summary:hover { background: #fff8f0; }
+        
+        .assignment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; padding: 15px; background: #fafafa; }
+        .assignment-card { background: white; border: 1px solid #ddd; border-radius: 4px; padding: 15px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .assignment-card h4 { margin: 0 0 10px 0; color: #333; font-size: 1em; }
+
+        /* =======================================
+           UNIFIED VIEWER STYLES
            ======================================= */
         #viewer-layout { display: none; width: 100%; height: 100vh; flex-direction: column; background: #f4f6f8; z-index: 100; position: fixed; top: 0; left: 0; }
-        .viewer-topbar { 
-            height: 45px; background: linear-gradient(to bottom, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; border-bottom: 2px solid #a04000; box-shadow: 0 2px 5px rgba(0,0,0,0.3); 
-        }
+        .viewer-topbar { height: 45px; background: linear-gradient(to bottom, #5e5e5e 0%, #3e3e3e 50%, #2d2d2d 51%, #1f1f1f 100%); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; color: white; border-bottom: 2px solid #a04000; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .viewer-nav-controls { display: flex; align-items: center; gap: 15px; font-weight: bold; }
         .viewer-nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 4px; padding: 4px 12px; cursor: pointer; transition: all 0.2s; }
         .viewer-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
@@ -175,15 +185,8 @@
         .viewer-close-btn:hover { color: white; }
 
         .viewer-content-area { flex-grow: 1; overflow-y: auto; padding: 30px; display: flex; justify-content: center; }
-        .viewer-paper { background: white; width: 100%; max-width: 900px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; border: 1px solid #ddd; padding: 40px; min-height: 600px; }
+        .viewer-paper { background: white; width: 100%; max-width: 900px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; border: 1px solid #ddd; padding: 40px; min-height: 600px; position: relative; }
         
-        /* Lesson Specific Elements */
-        .lesson-header { color: #2e7d32; font-size: 2em; border-bottom: 2px solid #a5d6a7; padding-bottom: 10px; margin-top: 0; }
-        .lesson-objectives { border: 2px solid #a5d6a7; border-radius: 8px; padding: 20px; margin: 20px 0; background: #f1f8e9; }
-        .lesson-objectives h3 { color: #2e7d32; margin-top: 0; display: flex; align-items: center; gap: 10px; }
-        .lesson-text { font-family: 'Georgia', serif; font-size: 1.1em; line-height: 1.8; color: #333; }
-        
-        /* Quiz Specific Elements */
         .quiz-header { border-bottom: 2px solid #ddd; padding-bottom: 20px; margin-bottom: 20px; }
         .quiz-title { font-size: 1.8em; color: var(--moe-amber); margin: 0 0 10px 0; }
         .question-box { border: 1px solid #ccc; border-radius: 6px; margin-bottom: 25px; overflow: hidden; }
@@ -193,8 +196,6 @@
         .radio-option:hover { background: #f9f9f9; }
         .radio-option input { margin-right: 10px; }
         .quiz-submit-box { background: rgba(243, 156, 18, 0.1); padding: 20px; border: 1px solid var(--moe-amber); border-radius: 6px; text-align: center; margin-top: 30px; }
-
-        footer { text-align: center; padding: 20px; color: #555; font-size: 0.9em; background: rgba(255,255,255,0.6); margin-top: auto; }
     </style>
 </head>
 <body>
@@ -215,10 +216,7 @@
     </nav>
 
     <div class="content-wrapper">
-        
-        <!-- ========================================== -->
-        <!-- STATE 1: DASHBOARD SELECTION VIEW -->
-        <!-- ========================================== -->
+        <!-- STATE 1: DASHBOARD SELECTION -->
         <div id="dashboard-selection-view">
             <div class="content-grid">
                 <div class="main-col">
@@ -241,7 +239,6 @@
 
                     <div class="glass-panel">
                         <h2>Course Catalog</h2>
-                        <p>Available provincial courses for this semester. Click to enroll.</p>
                         <div class="course-grid">
                             <div class="division-card course-card">
                                 <h3>Constitution 101</h3>
@@ -265,11 +262,8 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- STATE 2: COURSE DETAIL VIEW (APP MODE) -->
-        <!-- ========================================== -->
+        <!-- STATE 2: COURSE DETAIL VIEW -->
         <div id="course-detail-view" style="display: none;">
-            
             <div class="app-sidebar">
                 <div class="sidebar-account-info">
                     <h3>Account Info</h3>
@@ -310,11 +304,6 @@
                         <p style="color: #555;">Complete your assessments in the Assignments tab to calculate your standing.</p>
                     </div>
                     <div class="glass-panel">
-                        <h3 style="margin-top:0; color: var(--moe-amber);">Next Deadline</h3>
-                        <p style="color: #555;"><strong>Required Modules</strong></p>
-                        <p style="font-size: 0.9em; color: #c0392b; font-weight: bold;">Self-paced curriculum.</p>
-                    </div>
-                    <div class="glass-panel">
                         <h3 style="margin-top:0; color: var(--moe-amber);">Curriculum Progress</h3>
                         <div style="background: #eee; border-radius: 100px; height: 20px; width: 100%; overflow: hidden; margin-top: 15px; border: 1px solid #ccc;">
                             <div id="progress-bar-fill" style="background: linear-gradient(to bottom, #f39c12, #d35400); width: 0%; height: 100%; transition: width 0.4s ease;"></div>
@@ -345,45 +334,34 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: ASSIGNMENTS -->
+                <!-- TAB 3: ASSIGNMENTS (SYLLABUS VIEW) -->
                 <div id="tab-assignments" style="display: none;">
-                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">A detail of your uncompleted course modules and required assessments.</p>
-                    <div id="assignments-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-                        <!-- Populated dynamically by JS (hides completed items) -->
+                    <p style="color: #555; margin-bottom: 20px; font-size: 1.05em;">Expand the segments below to view your uncompleted assignments.</p>
+                    <div id="assignments-container">
+                        <!-- Populated dynamically by JS -->
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- ========================================== -->
-    <!-- STATE 3: UNIFIED VIEWER (LESSONS & QUIZZES)-->
-    <!-- ========================================== -->
+    <!-- STATE 3: UNIFIED VIEWER -->
     <div id="viewer-layout">
-        <!-- Top Control Bar -->
         <div class="viewer-topbar">
-            <div style="font-size: 0.9em; opacity: 0.8;" id="viewer-course-title">Constitution 101</div>
+            <div style="font-size: 0.9em; opacity: 0.8;" id="viewer-course-title">Course Name</div>
             
-            <!-- Pagination Controls (Only visible during lessons) -->
             <div class="viewer-nav-controls" id="viewer-pagination" style="display: none;">
                 <button class="viewer-nav-btn" onclick="changeLessonPage(-1)" id="btn-prev">&larr;</button>
                 <span id="page-indicator">1 of X</span>
                 <button class="viewer-nav-btn" onclick="changeLessonPage(1)" id="btn-next">&rarr;</button>
             </div>
 
-            <!-- Quiz Controls (Only visible during quizzes) -->
-            <div class="viewer-nav-controls" id="viewer-quiz-title" style="display: none;">
-                Assessment Mode
-            </div>
-
+            <div class="viewer-nav-controls" id="viewer-quiz-title" style="display: none;">Assessment Mode</div>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <span style="font-size: 0.85em; color: #aaa;" id="viewer-user">user@email</span>
                 <a href="javascript:void(0)" onclick="closeViewer()" class="viewer-close-btn" title="Exit to Course">&#10006;</a>
             </div>
         </div>
-
-        <!-- Content Area -->
         <div class="viewer-content-area">
             <div class="viewer-paper" id="viewer-paper-content">
                 <!-- Content injected here by JS -->
@@ -404,69 +382,27 @@
     let supabaseClient;
     let currentUser = null;
     let currentCourse = "";
-    let currentGrades = []; // We now store grades globally so we can check attempt counts
+    let currentGrades = []; 
+    let curriculum = null; // Will hold the parsed curriculum.json
     
-    // --- MOCK CURRICULUM DATABASE ---
-    const curriculum = {
-        "lesson_01": {
-            title: "Module 1 Reading",
-            description: "Read the introductory text regarding stylistic protocols.",
-            type: "lesson",
-            pages: [
-                `
-                <h1 class="lesson-header">Crafting Clarity in Government</h1>
-                <div class="lesson-objectives">
-                    <h3>&#10003; Objectives</h3>
-                    <ul>
-                        <li>Compare and contrast standard protocols with provincial law.</li>
-                        <li>Assess how bureaucratic style contributes to clarity.</li>
-                        <li>Demonstrate a practical understanding of core Sangaian style rules.</li>
-                    </ul>
-                </div>
-                <div class="lesson-text">
-                    <p>Greetings, Citizen. Those who study the framework of our great Republic have a tough task. They must be compelling thinkers who capture attention, creating a sense of duty in every article. Not only that, they must be careful to abide by the specific writing rules laid out by the Ministry.</p>
-                    <p>Think of it like a dress code for how legal articles should look. It covers various aspects of writing, including grammar, punctuation, and capitalization.</p>
-                </div>
-                `,
-                `
-                <h1 class="lesson-header">The Industry Standard</h1>
-                <div class="lesson-text">
-                    <p>The standard press style was formed in 1846 when several news outlets collaborated to share resources. As they continued to share information, it became clear that a standard formatting for articles was needed.</p>
-                    <p>Why was this necessary? Clarity and consistency for readers. Think about it like this: when you read a provincial edict, it's basically telling the same story, but there are often many differences in how the language is structured.</p>
-                </div>
-                `
-            ],
-            nextStep: "assessment_01" // Links to the quiz when finished
-        },
-        "assessment_01": {
-            title: "Module 1 Quiz",
-            description: "Comprehensive quiz covering module 1 protocols. 3 attempts max.",
-            type: "assessment",
-            questions: [
-                {
-                    q: "Which voice should always be used in government writing?",
-                    options: ["Subjective", "Passive", "Active", "Personal"],
-                    answer: 2 // Index of "Active"
-                },
-                {
-                    q: "Why is a standard formatting style necessary?",
-                    options: ["To confuse the public", "Clarity and consistency", "To save printer ink", "It is not necessary"],
-                    answer: 1
-                }
-            ]
-        }
-    };
-
-    // Global Viewer State
-    let viewerState = {
-        activeId: null,
-        currentPage: 0,
-        quizAnswers: {}
-    };
+    let viewerState = { activeId: null, currentPage: 0, quizAnswers: {} };
 
     // Initialization
     if (window.supabase) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // Fetch Curriculum on Load
+        fetch('curriculum.json')
+            .then(response => {
+                if(!response.ok) throw new Error("Could not load curriculum.json");
+                return response.json();
+            })
+            .then(data => { curriculum = data; })
+            .catch(error => {
+                console.error(error);
+                alert("Error: Missing 'curriculum.json' file. The course cannot load assignments.");
+            });
+
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if (session) {
                 currentUser = session.user;
@@ -489,13 +425,12 @@
         const { data: courses, error } = await supabaseClient.from('courses').select('*').eq('user_id', userId);
         document.getElementById('loader').style.display = 'none';
 
-        if (error) { console.error(error); return; }
+        if (error) { alert("Error loading courses: " + error.message); return; }
 
         const container = document.getElementById('course-container');
         if (courses && courses.length > 0) {
             container.style.display = 'grid';
             container.innerHTML = ''; 
-            
             courses.forEach(course => {
                 const card = document.createElement('div');
                 card.className = 'division-card course-card';
@@ -519,6 +454,10 @@
     // APP MODE: COURSE VIEW
     // ==========================================
     function openCourse(courseName, instructor) {
+        if(!curriculum) {
+            alert("Curriculum database is still loading or missing!");
+            return;
+        }
         currentCourse = courseName;
         document.getElementById('course-instructor-display').textContent = instructor;
         
@@ -564,15 +503,24 @@
         }
     }
 
+    // Helper to find a specific assignment object from the JSON tree
+    function getCurriculumItem(id) {
+        for(let s of curriculum.segments) {
+            for(let m of s.modules) {
+                for(let a of m.assignments) {
+                    if (a.id === id) return a;
+                }
+            }
+        }
+        return null;
+    }
+
     // ==========================================
     // GRADES & ASSIGNMENTS ENGINE
     // ==========================================
     async function loadGradesAndAssignments() {
-        // Fetch Grades from Supabase
         const { data, error } = await supabaseClient.from('assignment_grades')
-            .select('*')
-            .eq('user_id', currentUser.id)
-            .eq('course_name', currentCourse);
+            .select('*').eq('user_id', currentUser.id).eq('course_name', currentCourse);
 
         if (error) {
             console.error("Fetch Error:", error);
@@ -581,39 +529,55 @@
 
         currentGrades = (!error && data) ? data : [];
 
-        // 1. Dynamically Render Assignments Tab (Hiding completed ones)
+        // 1. Build Accordion Syllabus
         const assignBox = document.getElementById('assignments-container');
         assignBox.innerHTML = '';
-        let pendingCount = 0;
+        let totalItems = 0;
+        let completedCount = 0;
+        let anySegmentHasPending = false;
 
-        for (const [key, item] of Object.entries(curriculum)) {
-            // Check if the student has completed this item
-            const isCompleted = currentGrades.some(g => g.assignment_title === item.title);
-            
-            // Only render it in the to-do list if it's NOT completed
-            if (!isCompleted) {
-                pendingCount++;
-                const btnText = item.type === 'lesson' ? 'Start Lesson' : 'Take Quiz';
-                assignBox.innerHTML += `
-                    <div class="glass-panel" style="margin-bottom: 0;">
-                        <h3 style="margin-top: 0; color: var(--moe-amber);">${item.title}</h3>
-                        <p style="font-size: 0.9em; color: #555; height: 60px;">${item.description}</p>
-                        <button class="sangaia-btn" style="width: 100%; margin:0;" onclick="openViewer('${key}')"><span>${btnText}</span></button>
-                    </div>
-                `;
-            }
+        curriculum.segments.forEach(segment => {
+            let segmentHtml = `<details class="syllabus-segment" open><summary>${segment.title}</summary><div class="segment-content">`;
+            let segHasPending = false;
+
+            segment.modules.forEach(mod => {
+                let moduleHtml = `<details class="syllabus-module" open><summary>${mod.title}</summary><div class="assignment-grid">`;
+                let modHasPending = false;
+
+                mod.assignments.forEach(item => {
+                    totalItems++;
+                    const isCompleted = currentGrades.some(g => g.assignment_title === item.title);
+                    if (isCompleted) {
+                        completedCount++;
+                    } else {
+                        // Only render UNCOMPLETED assignments to make them disappear when done!
+                        segHasPending = true;
+                        modHasPending = true;
+                        anySegmentHasPending = true;
+                        const btnText = item.type === 'lesson' ? 'Start Lesson' : 'Take Quiz';
+                        moduleHtml += `
+                            <div class="assignment-card">
+                                <h4>${item.title}</h4>
+                                <button class="sangaia-btn active" style="width: 100%; margin:0; font-size:0.8em;" onclick="openViewer('${item.id}')"><span>${btnText}</span></button>
+                            </div>
+                        `;
+                    }
+                });
+                moduleHtml += `</div></details>`;
+                if (modHasPending) segmentHtml += moduleHtml; // Hide empty modules
+            });
+            segmentHtml += `</div></details>`;
+            if (segHasPending) assignBox.innerHTML += segmentHtml; // Hide empty segments
+        });
+
+        if (!anySegmentHasPending) {
+            assignBox.innerHTML = '<div style="text-align: center; padding: 40px; background: white; border-radius: 8px; color: #27ae60; font-weight: bold; border: 1px solid #ddd;">&#10003; You have completed all assignments for this course!</div>';
         }
 
-        if (pendingCount === 0) {
-            assignBox.innerHTML = '<p style="color: #777; grid-column: 1 / -1; text-align: center; padding: 20px;">You have completed all available assignments for this course!</p>';
-        }
-
-        // 2. Populate Gradebook & Homepage Stats
+        // 2. Populate Gradebook
         const gbBody = document.getElementById('gradebook-body');
         const recentSubs = document.getElementById('recent-subs-list');
-        
-        gbBody.innerHTML = '';
-        recentSubs.innerHTML = '';
+        gbBody.innerHTML = ''; recentSubs.innerHTML = '';
 
         if (currentGrades.length === 0) {
             gbBody.innerHTML = '<tr><td colspan="4" style="padding: 12px; text-align: center; color: #888;">No grades recorded yet.</td></tr>';
@@ -626,20 +590,26 @@
             let quizCount = 0;
 
             currentGrades.forEach(g => {
-                // Find curriculum item to check if it's a lesson or assessment
-                const currKey = Object.keys(curriculum).find(k => curriculum[k].title === g.assignment_title);
-                const isAssessment = currKey && curriculum[currKey].type === 'assessment';
-                const attempts = g.attempts || 1;
-                
-                if (isAssessment) {
-                    totalQuizScore += g.score;
-                    quizCount++;
+                // Determine if it's a lesson or assessment based on title (reverse lookup)
+                let isAssessment = false;
+                let currKey = null;
+                for(let s of curriculum.segments) {
+                    for(let m of s.modules) {
+                        for(let a of m.assignments) {
+                            if (a.title === g.assignment_title) {
+                                isAssessment = (a.type === 'assessment');
+                                currKey = a.id;
+                            }
+                        }
+                    }
                 }
+
+                const attempts = g.attempts || 1;
+                if (isAssessment) { totalQuizScore += g.score; quizCount++; }
 
                 let retakeBtn = '';
                 let attemptsText = 'N/A';
                 
-                // Add Retake button for assessments with < 3 attempts
                 if (isAssessment) {
                     attemptsText = `${attempts} / 3`;
                     if (attempts < 3) {
@@ -653,36 +623,21 @@
                 const statusText = isAssessment ? (g.score >= 60 ? 'Passed' : 'Failed') : 'Complete';
                 const displayScore = isAssessment ? `${g.score}%` : '&#10003;';
 
-                // Add to Gradebook Table
                 gbBody.innerHTML += `
                     <tr>
                         <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${g.assignment_title}</td>
-                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">
-                            <span class="status-badge ${statusColor}">${statusText}</span>
-                        </td>
-                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #555; font-size: 0.9em;">
-                            ${attemptsText}
-                        </td>
-                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; width: 120px;">
-                            ${displayScore}
-                            ${retakeBtn}
-                        </td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center;"><span class="status-badge ${statusColor}">${statusText}</span></td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; color: #555; font-size: 0.9em;">${attemptsText}</td>
+                        <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; width: 120px;">${displayScore}${retakeBtn}</td>
                     </tr>
                 `;
-                
-                // Add to recent submissions on homepage
                 recentSubs.innerHTML += `<li style="margin-bottom: 5px;">${g.assignment_title} <span style="color:#2e7d32; font-weight:bold;">(${displayScore})</span></li>`;
             });
 
-            // Calc average based on QUIZZES only
             const avg = quizCount > 0 ? Math.round(totalQuizScore / quizCount) : '--';
             document.getElementById('course-grade-display').textContent = avg === '--' ? '--' : avg + "%";
             
-            // Calc Progress Percentage
-            const totalItems = Object.keys(curriculum).length;
-            const completedItems = currentGrades.length;
-            const prog = Math.round((completedItems / totalItems) * 100);
-            
+            const prog = totalItems > 0 ? Math.round((completedCount / totalItems) * 100) : 0;
             document.getElementById('progress-bar-fill').style.width = prog + '%';
             document.getElementById('progress-text').textContent = prog + '%';
         }
@@ -703,41 +658,27 @@
         }
 
         if (existing) {
-            // Update existing grade
             const { error } = await supabaseClient.from('assignment_grades')
                 .update({ score: score, attempts: attempts })
                 .eq('user_id', currentUser.id)
                 .eq('course_name', currentCourse)
                 .eq('assignment_title', title);
             
-            if (error) {
-                alert("Database Update Error: " + error.message + "\n\n(Did you disable RLS on the assignment_grades table?)");
-                return false;
-            }
+            if (error) { alert("Database Update Error: " + error.message); return false; }
         } else {
-            // Insert new grade
             const { error } = await supabaseClient.from('assignment_grades')
-                .insert([{
-                    user_id: currentUser.id,
-                    course_name: currentCourse,
-                    assignment_title: title,
-                    score: score,
-                    attempts: attempts
-                }]);
+                .insert([{ user_id: currentUser.id, course_name: currentCourse, assignment_title: title, score: score, attempts: attempts }]);
             
-            if (error) {
-                alert("Database Insert Error: " + error.message + "\n\n(Check that the table is named exactly 'assignment_grades', RLS is disabled, and all columns exist.)");
-                return false;
-            }
+            if (error) { alert("Database Insert Error: " + error.message); return false; }
         }
         return true;
     }
 
     // ==========================================
-    // UNIFIED VIEWER (LESSONS & QUIZZES)
+    // UNIFIED VIEWER (EXTERNAL FETCHING)
     // ==========================================
     function openViewer(contentId) {
-        const item = curriculum[contentId];
+        const item = getCurriculumItem(contentId);
         if (!item) return alert("Content not found.");
 
         viewerState.activeId = contentId;
@@ -762,39 +703,53 @@
     async function closeViewer() {
         document.getElementById('viewer-layout').style.display = 'none';
         document.getElementById('course-detail-view').style.display = 'flex';
-        await loadGradesAndAssignments(); // Refresh grades in case they just saved a test or lesson!
+        await loadGradesAndAssignments(); 
     }
 
-    // --- LESSON RENDERER ---
-    function renderLessonPage() {
-        const item = curriculum[viewerState.activeId];
+    // --- EXTERNAL HTML LESSON FETCHER ---
+    async function renderLessonPage() {
+        const item = getCurriculumItem(viewerState.activeId);
         const paper = document.getElementById('viewer-paper-content');
         
         document.getElementById('page-indicator').textContent = `${viewerState.currentPage + 1} of ${item.pages.length}`;
         document.getElementById('btn-prev').disabled = (viewerState.currentPage === 0);
         
-        let html = item.pages[viewerState.currentPage];
+        // Show loading state while fetching HTML file from GitHub/Server
+        paper.innerHTML = '<div style="text-align:center; padding: 50px; color:#888;">Securely fetching content...</div>';
+        
+        try {
+            const fileUrl = item.pages[viewerState.currentPage];
+            const response = await fetch(fileUrl);
+            if (!response.ok) throw new Error(`Could not load ${fileUrl}`);
+            
+            let html = await response.text();
 
-        // If on the last page, add the "Mark Complete" button
-        if (viewerState.currentPage === item.pages.length - 1) {
-            document.getElementById('btn-next').disabled = true;
-            html += `
-                <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
-                    <span style="color: #777; font-size: 0.9em;">Finished reading?</span>
-                    <button class="sangaia-btn active" onclick="markLessonComplete('${viewerState.activeId}')">
-                        <span>Mark as Complete & Continue &#10003;</span>
-                    </button>
-                </div>
-            `;
-        } else {
-            document.getElementById('btn-next').disabled = false;
+            if (viewerState.currentPage === item.pages.length - 1) {
+                document.getElementById('btn-next').disabled = true;
+                html += `
+                    <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; justify-content: flex-end; align-items: center; gap: 15px;">
+                        <span style="color: #777; font-size: 0.9em;">Finished reading?</span>
+                        <button class="sangaia-btn active" onclick="markLessonComplete('${viewerState.activeId}')">
+                            <span>Mark as Complete & Continue &#10003;</span>
+                        </button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('btn-next').disabled = false;
+            }
+            paper.innerHTML = html;
+            
+        } catch (error) {
+            console.error(error);
+            paper.innerHTML = `<div style="text-align:center; padding: 50px; color:red;">
+                <h3>File Not Found</h3>
+                <p>Ensure you have uploaded the file <strong>${item.pages[viewerState.currentPage]}</strong> to your GitHub repository.</p>
+            </div>`;
         }
-
-        paper.innerHTML = html;
     }
 
     function changeLessonPage(dir) {
-        const item = curriculum[viewerState.activeId];
+        const item = getCurriculumItem(viewerState.activeId);
         const newPage = viewerState.currentPage + dir;
         if (newPage >= 0 && newPage < item.pages.length) {
             viewerState.currentPage = newPage;
@@ -803,22 +758,18 @@
     }
 
     async function markLessonComplete(contentId) {
-        const item = curriculum[contentId];
-        const saved = await saveGrade(item.title, 100, false); // Lessons get a dummy score of 100
+        const item = getCurriculumItem(contentId);
+        const saved = await saveGrade(item.title, 100, false); 
         
-        // Only progress if the database successfully saved the completion
         if (saved) {
-            if (item.nextStep) {
-                openViewer(item.nextStep); // Launch the next quiz automatically!
-            } else {
-                closeViewer();
-            }
+            if (item.nextStep) { openViewer(item.nextStep); } 
+            else { closeViewer(); }
         }
     }
 
     // --- ASSESSMENT RENDERER ---
     function renderAssessment() {
-        const item = curriculum[viewerState.activeId];
+        const item = getCurriculumItem(viewerState.activeId);
         const paper = document.getElementById('viewer-paper-content');
         
         let html = `
@@ -854,7 +805,6 @@
                 <button class="sangaia-btn active" onclick="gradeAssessment()" style="width: 200px;"><span>Submit Assessment</span></button>
             </div>
         `;
-
         paper.innerHTML = html;
     }
 
@@ -864,12 +814,9 @@
 
     async function gradeAssessment() {
         const confirmBox = document.getElementById('submit-confirm-box');
-        if (!confirmBox.checked) {
-            alert("Please check the confirmation box to submit.");
-            return;
-        }
+        if (!confirmBox.checked) return alert("Please check the confirmation box to submit.");
 
-        const item = curriculum[viewerState.activeId];
+        const item = getCurriculumItem(viewerState.activeId);
         let correctCount = 0;
 
         item.questions.forEach((q, index) => {
@@ -877,10 +824,8 @@
         });
 
         const scorePercent = Math.round((correctCount / item.questions.length) * 100);
-        
         const saved = await saveGrade(item.title, scorePercent, true);
         
-        // Only show success and close if the database actually accepted the grade
         if (saved) {
             alert(`Assessment Submitted!\nYour Score: ${scorePercent}%`);
             closeViewer();
