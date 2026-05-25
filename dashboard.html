@@ -496,10 +496,11 @@
                 const card = document.createElement('div');
                 card.className = 'division-card course-card';
                 const safeName = (course.course_name || 'Course').replace(/'/g, "\\'");
+                const safeInst = (course.instructor || 'TBD').replace(/'/g, "\\'");
                 card.innerHTML = `
                     <h3>${course.course_name}</h3>
                     <p><strong>Instructor:</strong> ${course.instructor || 'TBD'}</p>
-                    <button class="sangaia-btn" style="margin-top:10px; width:100%;" onclick="openCourse('${safeName}', '${course.instructor}')">
+                    <button class="sangaia-btn" style="margin-top:10px; width:100%;" onclick="openCourse('${safeName}', '${safeInst}')">
                         <span>Go to course</span>
                     </button>
                 `;
@@ -515,7 +516,6 @@
     // ==========================================
     function openCourse(courseName, instructor) {
         currentCourse = courseName;
-        document.getElementById('course-name-display').textContent = courseName;
         document.getElementById('course-instructor-display').textContent = instructor;
         
         document.body.classList.add('app-mode');
